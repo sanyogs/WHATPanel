@@ -1,0 +1,78 @@
+@mixin bannerTitile {
+  font-size: 5.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0;
+}
+@mixin paraText {
+  font-size: 2rem;
+  font-weight: 400;
+  color: #d1d7e2;
+  margin-bottom: 0;
+}
+@mixin transBtn {
+  height: 4.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 11rem;
+  background: transparent;
+  gap: 0.5rem;
+  border-radius: 5rem;
+  border: 0.2rem solid #fff;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 1.6rem;
+  color: #fff;
+  &:hover {
+    background-color: #fff;
+    color: #18105e;
+    svg {
+      path {
+        fill: #18105e;
+      }
+    }
+  }
+}
+@mixin solidBtn {
+  height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14rem;
+  background: #5479f7;
+  gap: 0.5rem;
+  border-radius: 5rem;
+  border: 0;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 1.6rem;
+  color: #fff;
+  &:hover {
+    background-color: #1b4ff9;
+    color: #fff;
+  }
+}
+@mixin sectionText {
+  font-size: 3rem;
+  font-weight: 600;
+  color: #18236e;
+  margin-bottom: 1.5rem;
+  span {
+    color: #5479f7;
+  }
+}
+@mixin sectionDescription {
+  color: #888888;
+  font-size: 1.8rem;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+@mixin menuItem {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #18236e;
+  margin-bottom: 0;
+}

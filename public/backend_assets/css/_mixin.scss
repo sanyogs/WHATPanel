@@ -1,0 +1,418 @@
+@mixin bluebtn {
+  font-size: 1.6rem;
+  background-color: #1912d3;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  @include mid-991-tab{
+    font-size: 1.5rem;
+  }
+  @include md-mobile{
+    font-size: 1.4rem;
+  }
+  span {
+    display: flex;
+    align-items: center;
+  }
+  p {
+    margin: 0;
+    color: #ffffff;
+
+  }
+}
+@mixin grayTitle {
+  color: #888888;
+  font-weight: 400;
+  font-size: 1.6rem;
+  @include md-mobile{
+    font-size: 1.4rem;
+  }
+}
+@mixin grayBlueSelect {
+  color: #172f78;
+  font-weight: 600;
+  font-size: 1.6rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 0.4rem;
+  padding: 0.2rem;
+  background-color: transparent;
+  &:focus-visible {
+    outline: none;
+  }
+}
+@mixin grayBlueBtn {
+  color: #172f78;
+  font-weight: 600;
+  font-size: 1.6rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+@mixin blueHeading {
+  color: #172f78;
+  font-size: 1.6rem;
+  font-weight: 500;
+  @include md-mobile{
+    font-size: 1.4rem;
+  }
+}
+@mixin blueSmHeading {
+  color: #172f78;
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin: 0;
+  
+}
+@mixin graySmTitle {
+  color: #888888;
+  font-weight: 400;
+  font-size: 1.4rem;
+  margin: 0;
+  
+}
+
+@mixin categoryTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 0.5rem;
+  span {
+    display: flex;
+    align-items: center;
+  }
+  p {
+    @include blueSmHeading;
+  }
+}
+
+@mixin hs-modal-input {
+  background-color: #edf3ff;
+  padding: 0.5rem 1rem;
+  font-size: 1.4rem;
+  color: #888888;
+  font-weight: 400;
+  border: none;
+  width: 20rem;
+  border-radius: 0.5rem;
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+@mixin mainWrap {
+  background-color: #ffffff;
+  height: 98%;
+  border-radius: 1rem;
+  margin-right: 1rem;
+  padding: 1rem;
+}
+
+@mixin titleWrap {
+  padding: 0.5rem;
+  h3 {
+    color: #172f78;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    @include md-mobile{
+      font-size: 1.6rem;
+    }
+  }
+  p {
+    @include grayTitle;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@mixin searchBarWrap {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0rem 1rem;
+  @include x-tablet{
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+@mixin inputWrap {
+  position: relative;
+  span {
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    text-align: center;
+    top: 9px;
+    left: 11px;
+    svg path {
+      fill: #172f78;
+    }
+  }
+  input {
+    background-color: #edf3ff;
+    height: 3.6rem;
+    width: 25rem;
+    border: none;
+    border-radius: 0.5rem;
+    color: #888888;
+    padding-left: 3.5rem;
+    font-size: 1.4rem;
+    &:focus-visible {
+      outline: none;
+    }
+    @include mobile{
+      width: auto;
+    }
+  }
+}
+
+@mixin tableInfoHead {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.4rem;
+  border-bottom: 1px solid #dcefff;
+  flex-wrap: wrap;
+          gap: 5px;
+}
+
+@mixin entryWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
+  span {
+    @include grayTitle;
+  }
+  select {
+    @include grayBlueSelect;
+  }
+}
+
+@mixin filterBtn {
+  @include grayBlueBtn;
+  span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+@mixin dateWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  span {
+    position: absolute;
+    width: 1.7rem;
+    height: 1.7rem;
+    text-align: center;
+    top: 7px;
+    left: 11px;
+    display: flex;
+    align-items: center;
+  }
+  input {
+    @include grayBlueSelect;
+    padding-left: 3.5rem;
+    width: 17rem;
+    cursor: pointer;
+    caret-color: transparent;
+    @include mobile{
+      width: 13rem;
+    }
+  }
+}
+
+@mixin overflow-wrap {
+  height: 46vh;
+  position: sticky;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+@mixin data-table {
+  margin-top: 2rem;
+  width: 100%;
+  tr {
+    th {
+      @include blueHeading;
+      padding: 1rem 2rem;
+      text-align: center;
+      &:first-child {
+        div {
+          padding-right: 1rem;
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          input {
+            height: 1.6rem;
+            width: 1.6rem;
+          }
+        }
+      }
+      &:nth-child(even) {
+        border-right: 1px solid #dcefff;
+        border-left: 1px solid #dcefff;
+      }
+    }
+    td {
+      text-align: center;
+      @include grayTitle;
+      font-size: 1.4rem;
+      padding: 1rem 0;
+      text-overflow: ellipsis;
+      @include mid-991-tab{
+        padding: 1rem;
+      }
+      @include md-mobile{
+        font-size: 1.2rem;
+      }
+
+      .tableIcon {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 0 2rem;
+        justify-content: center;
+        a {
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+        }
+      }
+
+      &:first-child {
+        div {
+          padding: 1rem 2rem;
+          padding-right: 1rem;
+          display: flex;
+          gap: 10px;
+          align-items: center;
+          input {
+            height: 1.6rem;
+            width: 1.6rem;
+          }
+        }
+      }
+      &:nth-child(even) {
+        border-right: 1px solid #dcefff;
+        border-left: 1px solid #dcefff;
+      }
+    }
+
+    &:nth-child(even) {
+      background-color: #f9fbff;
+    }
+    &:nth-child(odd) {
+      background-color: #ffffff;
+    }
+    &:first-child {
+      background-color: #edf3ff;
+    }
+  }
+}
+
+@mixin paginationDiv {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  @include md-mobile{
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  li {
+    background-color: #edf3ff;
+    color: #94a2bc;
+    font-size: 1.4rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.4rem;
+    &.active {
+      color: #ffffff;
+      background-color: #1912d3;
+    }
+    @include mobile{
+      font-size: 1.2rem !important;
+      padding: .6rem .8rem;
+    }
+  }
+}
+
+@mixin dashTitles {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  h4 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    color: #172f78;
+  }
+  span {
+    background-color: #f1f5ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+  }
+}
+
+@mixin rsPendingCardDiv {
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  justify-content: space-between;
+  background-color: #ffffff;
+}
+
+@mixin svgDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background-color: #e3f8fa;
+  border-radius: 0.5rem;
+}
+
+@mixin pendingCardTextDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  h5 {
+    font-size: 3rem;
+    font-weight: 600;
+    color: #172f78;
+    margin: 0;
+  }
+  p {
+    color: #0c6e7b;
+    font-size: 1.6rem;
+    margin: 0;
+  }
+}
+
+@mixin swtichInputBox{
+  .input-btn-div {
+    padding: 0;
+    input {
+      margin: 0;
+      height: 3.3rem;
+      width: 6.2rem;
+      box-shadow: 1px 1px 5px rgba(228, 228, 228, 0.3);
+    }
+  }
+}

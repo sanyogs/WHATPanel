@@ -1,0 +1,32 @@
+<?php 
+/*
+ * This file is part of WHATPANEL.
+ *
+ * @package     WHAT PANEL – Web Hosting Application Terminal Panel.
+ * @copyright   2023-2024 Version Next Technologies and MadPopo. All rights reserved.
+ * @license     BSL; see LICENSE.txt
+ * @link        https://www.version-next.com
+ */
+
+namespace Twilio\Rest;
+
+use Twilio\Rest\Taskrouter\V1;
+class Taskrouter extends TaskrouterBase {
+
+    /**
+     * @deprecated Use v1->workspaces instead.
+     */
+    protected function getWorkspaces(): \Twilio\Rest\Taskrouter\V1\WorkspaceList {
+        echo "workspaces is deprecated. Use v1->workspaces instead.";
+        return $this->v1->workspaces;
+    }
+
+    /**
+     * @deprecated Use v1->workspaces(\$sid) instead.
+     * @param string $sid The SID of the resource to fetch
+     */
+    protected function contextWorkspaces(string $sid): \Twilio\Rest\Taskrouter\V1\WorkspaceContext {
+        echo "workspaces(\$sid) is deprecated. Use v1->workspaces(\$sid) instead.";
+        return $this->v1->workspaces($sid);
+    }
+}

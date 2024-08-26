@@ -1,0 +1,11 @@
+name: test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - run: docker-compose run tests
+      - run: bash <(curl -s https://codecov.io/bash)

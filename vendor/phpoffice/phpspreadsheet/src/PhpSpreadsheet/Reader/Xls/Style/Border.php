@@ -1,0 +1,45 @@
+<?php 
+/*
+ * This file is part of WHATPANEL.
+ *
+ * @package     WHAT PANEL – Web Hosting Application Terminal Panel.
+ * @copyright   2023-2024 Version Next Technologies and MadPopo. All rights reserved.
+ * @license     BSL; see LICENSE.txt
+ * @link        https://www.version-next.com
+ */
+
+namespace PhpOffice\PhpSpreadsheet\Reader\Xls\Style;
+
+use PhpOffice\PhpSpreadsheet\Style\Border as StyleBorder;
+
+class Border
+{
+    /**
+     * @var array<int, string>
+     */
+    protected static $borderStyleMap = [
+        0x00 => StyleBorder::BORDER_NONE,
+        0x01 => StyleBorder::BORDER_THIN,
+        0x02 => StyleBorder::BORDER_MEDIUM,
+        0x03 => StyleBorder::BORDER_DASHED,
+        0x04 => StyleBorder::BORDER_DOTTED,
+        0x05 => StyleBorder::BORDER_THICK,
+        0x06 => StyleBorder::BORDER_DOUBLE,
+        0x07 => StyleBorder::BORDER_HAIR,
+        0x08 => StyleBorder::BORDER_MEDIUMDASHED,
+        0x09 => StyleBorder::BORDER_DASHDOT,
+        0x0A => StyleBorder::BORDER_MEDIUMDASHDOT,
+        0x0B => StyleBorder::BORDER_DASHDOTDOT,
+        0x0C => StyleBorder::BORDER_MEDIUMDASHDOTDOT,
+        0x0D => StyleBorder::BORDER_SLANTDASHDOT,
+    ];
+
+    public static function lookup(int $index): string
+    {
+        if (isset(self::$borderStyleMap[$index])) {
+            return self::$borderStyleMap[$index];
+        }
+
+        return StyleBorder::BORDER_NONE;
+    }
+}

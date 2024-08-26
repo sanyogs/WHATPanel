@@ -1,0 +1,18 @@
+<?php 
+/*
+ * This file is part of WHATPANEL.
+ *
+ * @package     WHAT PANEL – Web Hosting Application Terminal Panel.
+ * @copyright   2023-2024 Version Next Technologies and MadPopo. All rights reserved.
+ * @license     BSL; see LICENSE.txt
+ * @link        https://www.version-next.com
+ */
+
+namespace Psr\SimpleCache;
+
+/**
+ * Interface used for all types of exceptions thrown by the implementing library.
+ */
+interface CacheException extends \Throwable
+{
+}

@@ -1,0 +1,170 @@
+.box-top{
+    margin-top: 2%;
+}
+.modal-input{
+display: flex;
+margin-top: 3%;
+}
+.switch-cus{
+	margin: 0;
+    height: 3.3rem !important;
+    width: 6.2rem !important;
+    box-shadow: 1px 1px 5px rgba(228, 228, 228, 0.3);
+    background-position: left center;
+    border-radius: 1.5rem !important;
+    transition: background-position .15s ease-in-out;
+}
+.modal-cus{
+height: 100% !important;
+}
+.button-cus{
+color: white !important;
+align-content: center;
+}
+.row-reverse{
+flex-direction: row-reverse;
+}
+.img-cus{
+width:20%;
+height:20%;
+margin-top:9%;
+}
+.department-p-btn{
+font-size: 1.6rem;
+background-color: #1912d3;
+border-radius: 0.5rem;
+padding: -1.2rem 1.2rem;
+cursor: pointer;
+color: #ffffff;
+margin-left: 55%;
+margin-top: 5px;
+}
+
+.show{
+    display: block !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.modal-backdrop {
+    pointer-events: none !important;
+}
+
+.left-pos-border{
+position: absolute;
+    top: 4px;
+    z-index: 9;
+    padding: 1rem 0;
+    margin: 0 1rem;
+
+}
+.BodyWrapper .BodyDiv #pt-wrap .pt-card-wraps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 2rem 0;
+}
+@media (max-width: 991px) {
+  .BodyWrapper .BodyDiv #pt-wrap .pt-card-wraps {
+    justify-content: flex-start;
+  }
+}
+.BodyWrapper .BodyDiv #pt-wrap .pt-card-wraps img {
+  margin: 1rem;
+  width: 200px;
+}
+@media (max-width: 991px) {
+  .BodyWrapper .BodyDiv #pt-wrap .pt-card-wraps img {
+    width: 150px;
+    height: 250px;
+  }
+}
+
+.dropdown-menu.show{
+display: block !important;
+background-color: white !important;
+
+}
+.user-dropdown.show{
+left: unset !important;
+}
+.headerUserBlock.show{
+background-color: unset !important;
+}
+.dropdown.show{
+background-color: unset !important;
+}
+.dropdown-menu li{
+color: #1912d3 !important;
+}
+
+.unique-input-file .bootstrap-filestyle{
+position: relative !important;
+}
+.unique-input-file .bootstrap-filestyle label{
+position: absolute !important;
+width: 100% !important;
+top: 0px !important;
+}
+.tab-pane.show{
+display: block !important;
+background-color: white !important;
+}
+
+.clearfix.hidden-print.show{
+display:unset !important; 
+background-color: unset !important;
+}
+
+.nav-tabs li.active{
+border-bottom: 1px solid blue;
+}
+
+.modal-backdrop{
+background-color: transparent !important;
+}
+.modal-open .modal-backdrop{
+background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+.donut-text-center {
+position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.donut-text-center span{
+font-size: 2.6rem !important;
+}
+.invoice_image {
+    width: 100%;
+    min-height: 30px;
+    margin: 20px 0;
+}
+#invoice-logo-dimensions {
+    line-height: 46px;
+}
+.invoice_image img {
+    height: 100%;
+}
+#invoice-logo-slider {
+    margin: 15px 0;
+}
+.rowGenerats{
+	    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5rem;
+}
+.rowGenerats .modal-input{
+    align-items: center;
+    gap: 1rem;
+	    width: 100%;
+}
+.powere_d{
+    text-align: end;
+    font-size: 16px;
+    color: white;
+    padding-right: 19px;
+}
