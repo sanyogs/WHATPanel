@@ -120,12 +120,15 @@ class Installer extends MX_Controller
 				session()->set('key', $apiKey);
 				$body = [
 					'action' => 'check_license',
-					'domain_name' => $trim,
-					//'domain_name' => "uat.whatpanel.com",
+					//'domain_name' => $trim,
+					'domain_name' => "sanyog.com",
 					'license' => $apiKey
 				];
 				
 				try {
+                    $client = new \GuzzleHttp\Client([
+                        'verify' => false, // or use a path to cacert.pem for a more secure approach
+                    ]);
 					// Make the GET request with the Authorization header
 					$response = $client->post($url, [
 						'headers' => [
@@ -196,8 +199,6 @@ class Installer extends MX_Controller
 
     public function done()
     {
-        // $this->load->view('installed');
-		
 		// Define the file path
         $filePath = APPPATH."/Config/alldone.txt";
 
@@ -234,7 +235,18 @@ class Installer extends MX_Controller
 			['id' => 29, 'name' => 'Domain Names', 'settings' => '', 'param' => 'faq_39', 'type' => 'Module', 'module' => 'FAQ']
 		];
 
-		$builder->insertBatch($data);
+        foreach ($data as $row) {
+            // Check if the record exists
+            $existingRecord = $builder->where('id', $row['id'])->get()->getRowArray();
+            
+            if ($existingRecord) {
+                // Update the existing record
+                $builder->where('id', $row['id'])->update($row);
+            } else {
+                // Insert the new record
+                $builder->insert($row);
+            }
+        }
 		
         return view('installed');
     }
@@ -429,7 +441,7 @@ class Installer extends MX_Controller
 		$this->clearCache();
 
 		// Path to your SQL file
-		$fileUrl = $baseURL . 'public/sql/whatpanel_' . $version . '.sql';
+		$fileUrl = $baseURL . '/public/sql/whatpanel_' . $version . '.sql';
 		$tempFilePath = WRITEPATH . 'temp_sql_file.sql';
 
 		// Fetch the SQL file using cURL

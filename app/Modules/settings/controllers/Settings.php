@@ -915,8 +915,7 @@ class Settings extends WhatPanel
                     return redirect()->to('settings/system');
                     break;
                 case 'theme':
-					echo 343;die;
-                    if ($request->getFile('iconfile')) {
+                    if ($request->getFile('iconfile')) { 
                         $stat = $this->upload_favicon($request->getPost());
 						return redirect()->to($stat);
                     }
@@ -929,9 +928,7 @@ class Settings extends WhatPanel
                     if ($request->getFile('loginbg')) {
                         $this->upload_login_bg($request->getPost());
                     }
-					echo 132;die;
                     $this->_update_theme_settings('theme');
-					echo 123;die;
                     return redirect()->to('settings/theme');
                     break;
                 case 'crons':
@@ -1268,7 +1265,7 @@ class Settings extends WhatPanel
         $session->setFlashdata('response_status', 'success');
         $session->setFlashdata('message', lang('hd_lang.settings_updated_successfully'));
         //return redirect()->to('settings/theme');
-        //$return_url = base_url() . 'settings/theme';
+        $return_url = base_url() . 'settings/theme';
 
         return $return_url;
     }
@@ -1599,8 +1596,8 @@ class Settings extends WhatPanel
             $this->form_validation->set_rules('email_invoice_message', 'Invoice Message', 'required');
             $this->form_validation->set_rules('reminder_message', 'Reminder Message', 'required');
             if ($this->form_validation->run() == FALSE) {
-                $this->session->set_flashdata('response_status', 'error');
-                $this->session->set_flashdata('message', lang('hd_lang.settings_update_failed'));
+                session()->setFlashdata('response_status', 'error');
+                session()->setFlashdata('message', lang('hd_lang.settings_update_failed'));
                 $_POST = '';
                 $this->update('email');
             } else {
@@ -1609,13 +1606,13 @@ class Settings extends WhatPanel
                     $this->db->where('config_key', $key)->update('config', $data);
                 }
 
-                $this->session->set_flashdata('response_status', 'success');
-                $this->session->set_flashdata('message', lang('hd_lang.settings_updated_successfully'));
+                session()->setFlashdata('response_status', 'success');
+                session()->setFlashdata('message', lang('hd_lang.settings_updated_successfully'));
                 redirect('settings/update/email');
             }
         } else {
-            $this->session->set_flashdata('response_status', 'error');
-            $this->session->set_flashdata('message', lang('hd_lang.settings_update_failed'));
+            session()->setFlashdata('response_status', 'error');
+            session()->setFlashdata('message', lang('hd_lang.settings_update_failed'));
             redirect('settings/update/email');
         }
     }
@@ -1637,16 +1634,25 @@ class Settings extends WhatPanel
 
         // Get the uploaded file(s)
         $file = $request->getFile('iconfile');
-		
+
         // Validate the uploaded file
         $validationRules = [
-            'iconfile' => 'uploaded[iconfile]|max_size[iconfile,1024]|is_image[iconfile]|ext_in[iconfile,jpg,jpeg,png,ico,svg]',
+            'iconfile' => [
+                'rules' => 'uploaded[iconfile]|is_image[iconfile]|ext_in[iconfile,jpg,jpeg,png,ico]|max_size[iconfile,1024]|max_dims[iconfile,300,300]',
+                'errors' => [
+                    'uploaded' => 'No file was uploaded.',
+                    'is_image' => 'The file is not a valid image.',
+                    'ext_in' => 'Invalid file extension.',
+                    'max_size' => 'File size exceeds the limit of 1MB.',
+                    'max_dims' => 'Image dimensions exceed the limit of 300x300 pixels.'
+                ]
+            ]
         ];
 
-        //if ($this->validate($validationRules)) {
+        if ($this->validate($validationRules)) {
             // Move the uploaded file to the desired directory
             $newName = $file->getRandomName();
-
+           
             // Use the move method to upload the file to the specified folder
             $file->move($uploadPath, $newName);
 
@@ -1657,11 +1663,11 @@ class Settings extends WhatPanel
 
             // Assuming $db is an instance of the database class
             $db->table('hd_config')->where('config_key', 'site_favicon')->update($data);
-		
-		echo  $_POST['return_url'];
+
+		    return $_POST['return_url'];
 
             //return TRUE;
-        //}
+        }
     }
 
 

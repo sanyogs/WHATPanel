@@ -1,12 +1,12 @@
-<?php 
+<?php
 /*
- * This file is part of WHATPANEL.
- *
- * @package     WHAT PANEL – Web Hosting Access Terminal Panel.
- * @copyright   2023-2024 Version Next Technologies and MadPopo. All rights reserved.
- * @license     BSL; see LICENSE.txt
- * @link        https://www.version-next.com
- */
+* This file is part of WHATPANEL.
+*
+* @package     WHAT PANEL – Web Hosting Access Terminal Panel.
+* @copyright   2023-2024 Version Next Technologies and MadPopo. All rights reserved.
+* @license     BSL; see LICENSE.txt
+* @link        https://www.version-next.com
+*/
 
 use App\Libraries\AppLib;
 use App\Models\App;
@@ -39,20 +39,20 @@ $db = \Config\Database::connect();
 				<i class="fa fa-pencil"></i> <?= lang('hd_lang.edit_ticket') ?></a>
 		<?php } ?>
 
-			<span class='custom-ticket-dropdown'>
+		<span class='custom-ticket-dropdown'>
 			<button class="btn btn-sm btn-<?= $custom->getconfig_item('theme_color') ?> dropdown-toggle btn-responsive common-button" data-toggle="dropdown">
 				<?= lang('hd_lang.change_status') ?>
 				<span class="caret"></span></button>
 			<ul class="dropdown-menu">
 				<?php
-				$statuses = $db->table('hd_status')->get()->getResult();
+				$statuses = $db->table('hd_status')->whereIn('status', ['open', 'in_process', 'on_hold', 'closed', 'resolved', 'pending'])->get()->getResult();
 				foreach ($statuses as $key => $s) { ?>
-					<li><a href="<?= base_url() ?>tickets/status/<?= $info->id ?>/<?= $s->status ?>"><?= lang($s->status) ?></a>
+					<li><a href="<?= base_url() ?>tickets/status/<?= $info->id ?>/<?= $s->status ?>"><?= lang($s->name) ?></a>
 					</li>
 				<?php } ?>
 			</ul>
-			</span>
-		
+		</span>
+
 		<?php if (User::is_admin()) { ?>
 			<a href="<?= base_url() ?>tickets/delete/<?= $info->id ?>" class="btn btn-sm btn-danger pull-right btn-responsive common-button" data-toggle="ajaxModal">
 				<i class="fa fa-trash-o"></i> <?= lang('hd_lang.delete_ticket') ?></a>
@@ -183,37 +183,37 @@ $db = \Config\Database::connect();
 								</span><?= lang('hd_lang.department') ?>
 							</li>
 							<?php
-								$status_lang = ''; // Initialize the variable
-								switch ($info->status) {
-									case 'open':
-										$status_lang = 'open';
-										break;
-									case 'closed':
-										$status_lang = 'closed';
-										break;
-									case 'pending':
-										$status_lang = 'pending';
-										break;
-									case 'resolved':
-										$status_lang = 'resolved';
-										break;
-									default:
-										// Handle cases where $info->status doesn't match any of the above cases
-										$status_lang = ''; // or assign some default value
-										break;
-								}
-								?>
-								<li class="list-group-item common-p">
-									<span class="pull-right common-span">
-										<label class="common-label col-lg-5 col-sm-3 col-12 label label-<?= $s_label ?>">
-											<?= ucfirst(lang('hd_lang.'.$status_lang)) ?>
-										</label>
-									</span><?= lang('hd_lang.status') ?>
-								</li>
+							$status_lang = ''; // Initialize the variable
+							switch ($info->status) {
+								case 'open':
+									$status_lang = 'open';
+									break;
+								case 'closed':
+									$status_lang = 'closed';
+									break;
+								case 'pending':
+									$status_lang = 'pending';
+									break;
+								case 'resolved':
+									$status_lang = 'resolved';
+									break;
+								default:
+									// Handle cases where $info->status doesn't match any of the above cases
+									$status_lang = ''; // or assign some default value
+									break;
+							}
+							?>
+							<li class="list-group-item common-p">
+								<span class="pull-right common-span">
+									<label class="common-label col-lg-5 col-sm-3 col-12 label label-<?= $s_label ?>">
+										<?= ucfirst(lang('hd_lang.' . $status_lang)) ?>
+									</label>
+								</span><?= lang('hd_lang.status') ?>
+							</li>
 							<li class="list-group-item common-p"><span class="pull-right common-span"><?= $info->priority ?></span><?= lang('hd_lang.priority') ?></li>
 
 							<li class="list-group-item common-p">
-								<span class="pull-right label label-success"  data-title="<?= $info->created ?>" >
+								<span class="pull-right label label-success" data-title="<?= $info->created ?>">
 
 									<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M", strtotime($info->created)); ?>
 
@@ -277,108 +277,65 @@ $db = \Config\Database::connect();
 					<section class="comment-list block my-4">
 						<!-- ticket replies -->
 						<div class="hs-table-overflow table-overflow" style='top: unset !important;'>
-						<table class='common-table tickets-reply-table' >
-									<?php
-									if (count(Ticket::view_replies($id)) > 0) {
-										foreach (Ticket::view_replies($id) as $key => $r) {
-											$role = User::get_role($r->replierid);
-											$role_label = ($role == 'admin') ? 'danger' : 'info';
-									?>
-								<!-- <article id="comment-id-1" >
-									
-									<section class="comment-body panel panel-default">
-										<header class="bg-white common-h">
+							<table class='common-table tickets-reply-table'>
+								<?php
+								if (count(Ticket::view_replies($id)) > 0) {
+									foreach (Ticket::view_replies($id) as $key => $r) {
+										$role = User::get_role($r->replierid);
+										$role_label = ($role == 'admin') ? 'danger' : 'info';
+								?>
+								<tr id="comment-id-1">
+									<td>
+										<div class="sender-div">
 											<a href="#"><?php echo User::displayName($r->replierid); ?></a>
-											<label class="label bg-<?= $role_label ?> m-l-xs common-p col-md-1 text-white text-center">
-												<?php echo ucfirst(User::get_role($r->replierid)) ?></label>
-											<span class="text-muted m-l-sm pull-right common-span">
-												<i class="fa fa-clock-o"></i>
-
-												<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M:%S", strtotime($r->time)); ?>
-												<?php
-												if ($custom->getconfig_item('show_time_ago') == 'TRUE') {
-													echo ' - ' . AppLib::time_elapsed_string(strtotime($r->time));
-												}
-												?>
-
-											</span>
-										</header>
-										<div class="panel-body">
-											<div class="small m-t-sm activate_links common-p">
-												<?= $r->body ?>
-											</div>
-
-											<?php if ($r->attachment != NULL) {
-												echo '<div class="line line-dashed line-lg pull-in"></div>';
-												$replyfiles = '';
-												if (json_decode($r->attachment)) {
-													$replyfiles = json_decode($r->attachment);
-													foreach ($replyfiles as $rf) { ?>
-														<a class="label bg-info" href="<?= base_url() ?>resource/attachments/<?= $rf ?>" target="_blank"><?= $rf ?></a><br>
-													<?php }
-												} else { ?>
-													<a href="<?= base_url() ?>resource/attachments/<?= $r->attachment ?>" target="_blank"><?= $r->attachment ?></a><br>
-												<?php } ?>
-
-											<?php } ?>
+											<span class="label bg-<?= $role_label ?>   text-white text-center"> <?php echo ucfirst(User::get_role($r->replierid)) ?></span>
 										</div>
-									</section>
-								</article> -->
-								
-									<tr id="comment-id-1">
-										<td>
-											<div class="sender-div">
-												<a href="#"><?php echo User::displayName($r->replierid); ?></a>
-												<span class="label bg-<?= $role_label ?>   text-white text-center"> <?php echo ucfirst(User::get_role($r->replierid)) ?></span>
-											</div>
-										</td>
-										<td>
+									</td>
+									<td>
 
-											<?= $r->body ?>
+										<?= $r->body ?>
 
-										</td>
-										<td>
-											<?php if ($r->attachment != NULL) {
-												echo '<div class="ticket-attachment pull-in"></div>';
-												$replyfiles = '';
-												if (json_decode($r->attachment)) {
-													$replyfiles = json_decode($r->attachment);
-													foreach ($replyfiles as $rf) { ?>
-														<a class="label bg-info" href="<?= base_url() ?>resource/attachments/<?= $rf ?>" target="_blank"><?= $rf ?></a><br>
-													<?php }
-												} else { ?>
-													<a href="<?= base_url() ?>resource/attachments/<?= $r->attachment ?>" target="_blank"><?= $r->attachment ?></a><br>
-												<?php } ?>
-
+									</td>
+									<td>
+										<?php if ($r->attachment != NULL) {
+											echo '<div class="ticket-attachment pull-in"></div>';
+											$replyfiles = '';
+											if (json_decode($r->attachment)) {
+												$replyfiles = json_decode($r->attachment);
+												foreach ($replyfiles as $rf) { ?>
+													<a class="label bg-info" href="<?= base_url() ?>resource/attachments/<?= $rf ?>" target="_blank"><?= $rf ?></a><br>
+												<?php }
+											} else { ?>
+												<a href="<?= base_url() ?>resource/attachments/<?= $r->attachment ?>" target="_blank"><?= $r->attachment ?></a><br>
 											<?php } ?>
-										</td>
-										<td>
-											<span class="text-muted m-l-sm pull-right common-span">
-												<i class="fa fa-clock-o"></i>
 
-												<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M:%S", strtotime($r->time)); ?>
-												<?php
-												if ($custom->getconfig_item('show_time_ago') == 'TRUE') {
-													echo ' - ' . AppLib::time_elapsed_string(strtotime($r->time));
-												}
-												?>
+										<?php } ?>
+									</td>
+									<td>
+										<span class="text-muted m-l-sm pull-right common-span">
+											<i class="fa fa-clock-o"></i>
 
-											</span>
-										</td>
-								
-									</tr>
-									
-									
-								
-							<?php }
-							} else { ?>
+											<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M:%S", strtotime($r->time)); ?>
+											<?php
+											if ($custom->getconfig_item('show_time_ago') == 'TRUE') {
+												echo ' - ' . AppLib::timeAgo($r->time);
+											}
+											?>
 
-								<tr id="comment-id-1" >
-									<td colspan='4'><p class="no-reply common-p"><?= lang('hd_lang.no_ticket_replies') ?></p></td>
+										</span>
+									</td>
 								</tr>
+									<?php }
+								} else { ?>
 
-							<?php } ?>
-						</table>
+									<tr id="comment-id-1">
+										<td colspan='4'>
+											<p class="no-reply common-p"><?= lang('hd_lang.no_ticket_replies') ?></p>
+										</td>
+									</tr>
+
+								<?php } ?>
+							</table>
 						</div>
 
 						<!-- comment form -->
@@ -421,7 +378,7 @@ $db = \Config\Database::connect();
 				</div>
 				<!-- End details -->
 		</div>
-			<script>
+		<script>
 			document.getElementById('add-new-file').addEventListener('click', function(event) {
 				event.preventDefault();
 

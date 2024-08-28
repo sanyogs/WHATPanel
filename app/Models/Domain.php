@@ -91,11 +91,10 @@ class Domain extends Model
 			->where($type)
 			->where($array)
 			->where('o_id', 0)
+			->distinct('domain')
 			->orderBy('id', 'desc');
 
 		$result = $query->get()->getResult();
-		
-		// echo $db->getLastQuery();die;
 
 		return $result;
 	}

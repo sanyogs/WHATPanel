@@ -19,6 +19,7 @@ use App\Models\App;
 use App\Models\Field;
 use App\Models\Invoice;
 use App\Models\Fields;
+use DateTime;
 
 class AppLib
 {
@@ -873,7 +874,7 @@ class AppLib
         date_default_timezone_set($custom->getconfig_item('timezone'));
         $etime = time() - $ptime;
 
-        if ($etime < 1) {
+        if ($etime < 1) { 
             return '0 seconds';
         }
 
@@ -903,6 +904,36 @@ class AppLib
         }
     }
 
+    static function timeAgo($timestamp)
+    {
+        $now = new DateTime();
+        $past = new DateTime($timestamp);
+        $interval = $now->diff($past);
+
+        $format = array();
+
+        if ($interval->y > 0) {
+            $format[] = $interval->y . ' year' . ($interval->y > 1 ? 's' : '');
+        }
+        if ($interval->m > 0) {
+            $format[] = $interval->m . ' month' . ($interval->m > 1 ? 's' : '');
+        }
+        if ($interval->d > 0) {
+            $format[] = $interval->d . ' day' . ($interval->d > 1 ? 's' : '');
+        }
+        if ($interval->h > 0) {
+            $format[] = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '');
+        }
+        if ($interval->i > 0) {
+            $format[] = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '');
+        }
+        if ($interval->s > 0) {
+            $format[] = $interval->s . ' second' . ($interval->s > 1 ? 's' : '');
+        }
+
+        // Combine all the parts
+        return implode(', ', $format) . ' ago';
+    }
 
 
     public static function curl_exec_follow($ch, &$maxredirect = null)

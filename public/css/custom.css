@@ -168,3 +168,91 @@ font-size: 2.6rem !important;
     color: white;
     padding-right: 19px;
 }
+
+/*   Installed CSS starts here */
+
+#installedSection {
+  position: relative;
+}
+.installDeskImg {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+.installDeskImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.textOverlayBox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.textOverlayBox h1 {
+  font-size: 42px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  line-height: 1;
+}
+.textOverlayBox span {
+  font-size: 18px;
+  font-weight: 400;
+  color: #d1d7e2;
+}
+.checkBtn {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  background: #5479f7;
+  border-radius: 5rem;
+  border: 0;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 16px;
+  color: #fff;
+  text-decoration: none;
+}
+.checkBtn:hover {
+  background-color: #1b4ff9;
+  color: #fff;
+}
+
+@media screen and (min-width: 1025px) {
+  .midTabImg {
+    display: none;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .deskImg {
+    display: none;
+  }
+}
+@media screen and (max-width: 767px) {
+  .deskImg {
+    display: none;
+  }
+  .midTabImg {
+    display: none;
+  }
+  .textOverlayBox{
+      width: 100%;
+  }
+  .textOverlayBox h1{
+      font-size: 32px;
+  }
+  .textOverlayBox span{
+      font-size: 14px;
+  }
+}
+/*   Installed CSS ends here */
