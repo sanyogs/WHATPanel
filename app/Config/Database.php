@@ -31,10 +31,10 @@ class Database extends Config
 
     public array $default = [
         'DSN'          => '',
-		'hostname'     => 'db_host',
-        'username'     => 'db_user',
-        'password'     => 'db_pass',
-        'database'     => 'db_name',
+        'hostname'     => 'localhost',
+		'username'     => 'root',
+		'password'     => '',
+		'database'     => 'whatpanel',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => 'hd_',
         'pConnect'     => false,

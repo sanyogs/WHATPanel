@@ -1,25 +1,17 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine On
+                        RewriteEngine On
+                        RewriteBase /WHATPanel/public/
+                        RewriteCond %{REQUEST_URI} ^system.*
+                        RewriteRule ^(.*)$ /index.php?/$1 [L]
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
+                        RewriteCond %{REQUEST_URI} ^application.*
+                        RewriteRule ^(.*)$ /index.php?/$1 [L]
 
-    # Rewrite "index.php" Out Of The URL...
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php/$1 [L]
+                        RewriteCond %{REQUEST_FILENAME} !-f
+                        RewriteCond %{REQUEST_FILENAME} !-d
+                        RewriteRule ^(.*)$ index.php?/$1 [L]
+                        </IfModule>
 
-    # Ensure Authorization Header is passed along
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    # Disable Directory Listing
-    Options -Indexes
-</IfModule>
-
-<IfModule !mod_rewrite.c>
-    # If we don't have mod_rewrite installed, all 404's
-    # can be sent to index.php, and everything works as normal.
-    ErrorDocument 404 /index.php
-</IfModule>
+                        <IfModule !mod_rewrite.c>
+                        ErrorDocument 404 /index.php
+                       </IfModule>

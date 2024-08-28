@@ -1,0 +1,4 @@
+.env
+.htaccess
+/writable/session
+/writable/logs

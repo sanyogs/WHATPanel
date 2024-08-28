@@ -55,6 +55,16 @@ $session = session();
 .edit-link:hover .edit-name {
     opacity: 1;
 }
+
+.clrBtn{	
+  font-size: 1.6rem !important;
+  border-radius: 0.5rem !important;
+  padding: 0.8rem 1.2rem !important;
+  text-align: center !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  border: 0 !important;
+}
 </style>
 
 <section id="orders-wrap">

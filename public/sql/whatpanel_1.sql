@@ -512,8 +512,8 @@ INSERT INTO `hd_config` (`config_key`, `value`) VALUES
 ('stop_timer_logout', 'FALSE'),
 ('stripe_active', 'TRUE'),
 ('stripe_live', 'TRUE'),
-('stripe_private_key', 'sk_test_51HJfXiJY2WLlJEcK37q619s4WVHrxgPfoBzAAErMyTcmTz4ukYWRLhxcD8mbKSrNaESrEPRiwTbrS7KP171r83Lk00wpmfay55'),
-('stripe_public_key', 'pk_test_51HJfXiJY2WLlJEcKunmHNmN59bEKRBmgFQzGIVQIIRlFENDSYlgYX5LmsX7QKbuG3hgX417rU3rGCN1hyzykX3rX00fqZh75gd'),
+('stripe_private_key', ''),
+('stripe_public_key', ''),
 ('support_email', 'support@whatpanel.com'),
 ('support_email_name', ' WHAT PANEL  Support'),
 ('suspend_after', '3'),
@@ -2190,6 +2190,8 @@ INSERT INTO `hd_status` (`id`, `name`, `status`) VALUES
 (15, 'Expired', 'expired'),
 (16, 'Transferred Away', 'transferred_away'),
 (17, 'Fraud', 'fraud');
+(17, 'In Process', 'in_process');
+(17, 'On Hold', 'on_hold');
 
 -- --------------------------------------------------------
 
@@ -2705,35 +2707,6 @@ CREATE TABLE `hd_resellerclub_customer_details` (
   `admin` int(100) DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-
-CREATE TABLE `hd_status` (
-  `id` int(11) NOT NULL,
-  `name` varchar(35) DEFAULT NULL,
-  `status` varchar(200) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Dumping data for table `hd_status`
---
-
-INSERT INTO `hd_status` (`id`, `name`, `status`) VALUES
-(1, 'Resolved', 'resolved'),
-(2, 'Closed', 'closed'),
-(3, 'Open', 'open'),
-(5, 'Pending', 'pending'),
-(6, 'Active', 'active'),
-(7, 'Cancelled', 'cancelled'),
-(8, 'Deleted', 'deleted'),
-(9, 'Suspended', 'suspended'),
-(10, 'Status', 'status'),
-(11, 'Pending Registration', 'pending_registration'),
-(12, 'Pending Transfer', 'pending_transfer'),
-(13, 'Grace Period(Expired)', 'grace_period'),
-(14, 'Redemption Period(Expired)', 'redemption_period'),
-(15, 'Expired', 'expired'),
-(16, 'Transferred Away', 'transferred_away'),
-(17, 'Fraud', 'fraud');
 
 --
 -- Dumping data for table `hd_user_autologin`
