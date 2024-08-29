@@ -236,7 +236,7 @@ $routes->group('domains', ['filter' => 'sessionsCheck', 'namespace' => 'App\Modu
 	$subroutes->get('activate/(:any)', 'Domains::activate/$1');
 	$subroutes->post('activate/(:any)', 'Domains::activate/$1');
 	$subroutes->get('cancel/(:any)', 'Domains::cancel/$1');
-	$subroutes->post('cancel/(:any)', 'Domains::cancel/$1');
+	$subroutes->post('cancel', 'Domains::cancel');
 	$subroutes->get('manage/(:any)', 'Domains::manage/$1');
 	$subroutes->post('manage/(:any)', 'Domains::manage/$1');
 });

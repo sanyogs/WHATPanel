@@ -52,9 +52,7 @@ use App\Modules\cart\controllers\Cart;
 use CodeIgniter\View\Exceptions\ViewException;
 use App\Modules\fomailer\controllers\Fomailer;
 use App\Modules\fopdf\controllers\Fopdf;
-
-
-
+use DOMDocument;
 
 class Invoices extends WhatPanel
 {
@@ -219,10 +217,6 @@ class Invoices extends WhatPanel
 
     public function add()
     {
-        // if (!User::can_add_invoice()) {
-        //     App::access_denied('invoices', 'invoices');
-        // }
-
         $request = \Config\Services::request();
 
         $custom_name_helper = new custom_name_helper();
@@ -1652,7 +1646,11 @@ class Invoices extends WhatPanel
 		$data['message'] = $message;
 		$invoice = Invoice::view_by_id($invoice_id);
 
-		$message = view('email_template', $data);
+        // $message = view('email_template', $data);
+
+		$dom = new DOMDocument();
+        $dom->loadHTML(view('email_template', $data));
+        $message = $dom->getElementsByTagName('body')->item(0)->nodeValue;
 
 		$params = array(
 			'recipient' => Client::view_by_id($invoice->client)->company_email,

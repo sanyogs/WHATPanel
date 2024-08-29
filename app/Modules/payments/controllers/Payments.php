@@ -44,10 +44,16 @@ class Payments extends WhatPanel
     function index()
     {	
 		$request = \Config\Services::request();
-        // $this->template->title(lang('hd_lang.payments'));
+        $db = \Config\Database::connect();
         $data['page'] = lang('hd_lang.payments');
         $data['datatables'] = TRUE;
-        $data['payments'] = $this->_payments_list();
+        $data['payments'] = $db->table('hd_payments')
+			->select('hd_payments.*, hd_invoices.inv_id, hd_invoices.status')
+			->join('hd_invoices', 'hd_payments.invoice = hd_invoices.inv_id')
+			->orderBy('hd_payments.created_date', 'desc')
+        	->where('hd_payments.inv_deleted', 'No')
+			->get()
+			->getResult();
 		
 		$payments = new Payment();
 		

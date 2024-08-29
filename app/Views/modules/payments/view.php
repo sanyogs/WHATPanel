@@ -28,10 +28,6 @@ $custom = new custom_name_helper();
         <?php $i = Payment::view_by_id($id); ?>
         <?php if(User::is_admin()){ ?>
 
-        <a href="<?=base_url()?>payments/edit/<?=$i->p_id?>" title="<?=lang('hd_lang.edit_payment')?>"
-            class="btn btn-sm common-button btn-<?=$custom->getconfig_item('theme_color');?>">
-            <i class="fa fa-pencil text-white"></i> <?=lang('hd_lang.edit_payment')?></a>
-
         <?php if($i->refunded == 'No'){ ?>
         <a href="<?=base_url()?>payments/refund/<?=$i->p_id?>" title="<?=lang('hd_lang.refund')?>"
             class="btn btn-sm common-button btn-<?=$custom->getconfig_item('theme_color');?>" data-toggle="ajaxModal">
