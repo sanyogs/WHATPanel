@@ -7,10 +7,6 @@
  * @license     BSL; see LICENSE.txt
  * @link        https://www.version-next.com
  */
-
-error_reporting(E_ALL);
-ini_set("display_errors", "1");
-
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Order;

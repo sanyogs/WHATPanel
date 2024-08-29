@@ -193,15 +193,6 @@ $due = $clientModel->due_amount($i->co_id);
                 <?= lang('hd_lang.send_email') ?>
               </a>
             </li>
-
-            <?php if ($custom_name->getconfig_item('sms_gateway') == 'TRUE') { ?>
-              <li class='common-p p-3'>
-                <a href="<?= base_url() ?>companies/send_sms/<?= $i->co_id ?>" data-toggle="ajaxModal"><i
-                    class="fa fa-paper-plane"></i>
-                  <?= lang('hd_lang.send_sms') ?>
-                </a>
-              </li>
-            <?php } ?>
           </ul>
           <div class="tab-content ">
             <div class="active tab-pane">

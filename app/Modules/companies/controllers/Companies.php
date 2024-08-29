@@ -119,9 +119,9 @@ class Companies extends WhatPanel
 
     public function create()
     {	
-		
-        $request = \Config\Services::request();
-        if ($request->getPost()) {
+		$request = \Config\Services::request();
+        if ($request->getPost()) 
+        {
             $custom_fields = array();
             foreach ($_POST as $key => &$value) {
                 if (strpos($key, 'cust_') === 0) {
@@ -200,6 +200,7 @@ class Companies extends WhatPanel
                         'company' => $company_id,
                         'fullname' => $request->getPost('company_name'),
                         'phone' => $request->getPost('company_phone'),
+						'mobile' => $request->getPost('company_mobile'),
                         'avatar' => 'default_avatar.jpg',
                         'language' => $request->getPost('language'),
                         'locale' => $this->custom_helper->getconfig_item('locale') ? $this->custom_helper->getconfig_item('locale') : 'en_US'
@@ -251,7 +252,6 @@ class Companies extends WhatPanel
             echo view('modules/companies/modal/create');
         }
     }
-
 
 
     public function update($company = null)
