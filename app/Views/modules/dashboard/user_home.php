@@ -185,9 +185,9 @@ $helper = new custom_name_helper();
 
 												$amount = "";
 												if ($currency != $helper->getconfig_item('default_currency')) {
-													$amount = AppLib::format_currency($helper->getconfig_item('default_currency'),Applib::convert_currency($currency, $i['amount']));
+													$amount = AppLib::format_currency(Applib::convert_currency($currency, $i['amount'], 'default_currency'));
 												}else{
-													$amount = AppLib::format_currency($helper->getconfig_item('default_currency'),$i['amount']); }
+													$amount = AppLib::format_currency($i['amount'], 'default_currency'); }
 										?>
 										<a href="<?=base_url()?>invoices/view/<?php echo $i['invoice']; ?>" class="list-group-item recent_bl">
 											<?php //echo Invoice::view_by_id($i['invoice'])->reference_no;?>
@@ -205,7 +205,7 @@ $helper = new custom_name_helper();
 						</div>
 						<div class="box-footer px-3 common-p">
 							<small><?= lang('hd_lang.total_receipts') ?>: <strong>
-								<?=Applib::format_currency($helper->getconfig_item('default_currency'),Report::total_paid());?>
+								<?=Applib::format_currency(Report::total_paid(), 'default_currency');?>
 								</strong></small>
 						</div>
 					</div>

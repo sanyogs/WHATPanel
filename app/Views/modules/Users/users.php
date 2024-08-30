@@ -64,7 +64,7 @@ $custom = new custom_name_helper();
                                         <input type="text" class="input-sm form-control common-input"
                                             value="<?=set_value('fullname')?>"
                                             placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_name')?>"
-                                            name="fullname" required />
+                                            name="fullname" pattern="[a-zA-Z ]+" required />
                                     </div>
                                     <div class="form-group">
                                         <label class="common-label"><?=lang('hd_lang.username')?> <span
@@ -72,7 +72,7 @@ $custom = new custom_name_helper();
                                         <input type="text" name="username"
                                             placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_username')?>"
                                             value="<?=set_value('username')?>"
-                                            class="input-sm form-control common-input" required />
+                                            class="input-sm form-control common-input" pattern="[a-zA-Z ]+" required />
                                     </div>
 
                                     <div class="form-group">
@@ -102,8 +102,7 @@ $custom = new custom_name_helper();
                                         <label class="common-label"><?=lang('hd_lang.company')?></label>
                                         <select class="select2-option w_200 common-select mb-3" name="company">
                                             <optgroup label="<?=lang('hd_lang.default_company')?>">
-                                                <option
-                                                    value="<?= ($company && isset($company->company)) ? $company->company : '' ?>">
+                                            <option value="<?= $company->company ?>"><?= $custom->getconfig_item('company_name') ?></option>
                                             </optgroup>
                                             <optgroup label="<?=lang('hd_lang.other_companies')?>">
                                                 <?php 
@@ -123,7 +122,7 @@ $custom = new custom_name_helper();
                                         <label class="common-label"><?=lang('hd_lang.phone')?> </label>
                                         <input type="text" class="input-sm form-control common-input"
                                             value="<?=set_value('phone')?>" name="phone"
-                                            placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_phone')?>" />
+                                            placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_phone')?>" pattern="[0-9]+"/>
                                     </div>
                                     <div class="form-group">
                                         <label class="common-label"><?=lang('hd_lang.role')?></label>
@@ -140,7 +139,7 @@ $custom = new custom_name_helper();
                                 <button type="submit"
                                     class="btn common-button btn-sm btn-<?=$custom->getconfig_item('theme_color')?>"><?=lang('hd_lang.register_user')?></button>
                             </div>
-                            </form>
+                           <?php form_close(); ?>
                         </div>
                     </div>
                 </div>
@@ -159,8 +158,6 @@ $custom = new custom_name_helper();
             });
         });
         </script>
-
-
 
         <div class="table-responsive">
             <table id="table-users" class="hs-table AppendDataTables mx-3">
@@ -313,4 +310,23 @@ $custom = new custom_name_helper();
             </table>
         </div>
     </div>
+	<script>
+	  var inputFields = document.querySelectorAll('input[name="fullname"], input[name="username"]');
+	  inputFields.forEach(function(inputField) {
+		inputField.addEventListener('input', function() {
+		  var inputValue = this.value;
+		  if (/\d/.test(inputValue)) {
+			this.value = inputValue.replace(/\d/g, '');
+		  }
+		});
+	  });
+
+	  var phoneInputField = document.querySelector('input[name="phone"]');
+	  phoneInputField.addEventListener('input', function() {
+		var inputValue = this.value;
+		if (/[a-zA-Z]/.test(inputValue)) {
+		  this.value = inputValue.replace(/[a-zA-Z]/g, '');
+		}
+	  });
+	</script>
     <?= $this->endSection() ?>

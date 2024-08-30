@@ -232,9 +232,9 @@ $routes->group('domains', ['filter' => 'sessionsCheck', 'namespace' => 'App\Modu
     $subroutes->post('resellerclub_modify_details', 'Domains::resellerclub_modify_details');
     $subroutes->post('edit_domain', 'Domains::edit_domain');
 	$subroutes->get('delete/(:any)', 'Domains::delete/$1');
-	$subroutes->post('delete/(:any)', 'Domains::delete/$1');
+	$subroutes->post('delete', 'Domains::delete');
 	$subroutes->get('activate/(:any)', 'Domains::activate/$1');
-	$subroutes->post('activate/(:any)', 'Domains::activate/$1');
+	$subroutes->post('activate', 'Domains::activate');
 	$subroutes->get('cancel/(:any)', 'Domains::cancel/$1');
 	$subroutes->post('cancel', 'Domains::cancel');
 	$subroutes->get('manage/(:any)', 'Domains::manage/$1');

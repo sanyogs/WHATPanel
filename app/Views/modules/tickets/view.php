@@ -103,7 +103,7 @@ $db = \Config\Database::connect();
 						<div class="form-group modal-input align-items-center   my-4">
 							<label class="common-label col-lg-5 col-sm-3 col-12"><?= lang('hd_lang.reporter') ?> <span class="text-danger">*</span></label>
 							<div class="m-b col-lg-7 col-sm-9 col-12">
-								<select class="select2-option form-control common-select" name="reporter" required="">
+							<select class="select2-option form-control common-select" name="reporter" required="" disabled>
 									<?php foreach (User::all_users() as $user) : ?>
 										<option value="<?= $user->id ?>" <?= ($info->reporter == $user->id ? ' selected="selected"' : '') ?>>
 											<?php echo User::displayName($user->id); ?></option>
@@ -318,7 +318,7 @@ $db = \Config\Database::connect();
 											<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M:%S", strtotime($r->time)); ?>
 											<?php
 											if ($custom->getconfig_item('show_time_ago') == 'TRUE') {
-												echo ' - ' . AppLib::timeAgo($r->time);
+											
 											}
 											?>
 

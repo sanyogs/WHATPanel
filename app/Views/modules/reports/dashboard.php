@@ -12,17 +12,18 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Report;
 use App\Models\App;
-
+use App\Helpers\custom_name_helper;
 use Config\MyConfig;
 
 $session = \Config\Services::session();
+$helper = new custom_name_helper();
 
 $applib = new AppLib();
 
 $chart_year = ($session->get('chart_year')) ? $session->get('chart_year') : date('Y');
 $config = new MyConfig();
 $cur = App::currencies($config->default_currency);
-// $this->lang->load('calendar',config_item('language'));
+
 $total_receipts = $applib->get_sum('hd_payments', 'amount', $array = array('inv_deleted' => 'No'));
 $invoice_amount = $applib->get_sum('hd_items', 'total_cost', $array = array('total_cost >' => '0'));
 $total_sales = $invoice_amount + $applib->total_tax();
@@ -46,7 +47,6 @@ if ($total_sales > 0) {
 
 <div class="box">
     <div class="box-header">
-        <?//=$this->load->view('report_header');?>
         <?=view('modules/reports/report_header');?>
 
     </div>
@@ -54,8 +54,6 @@ if ($total_sales > 0) {
     <div class="box-body">
 
         <div class="row">
-
-
             <div class="col-md-8">
                 <div class="box box-default box-solid">
                     <div class="box-header">
@@ -66,9 +64,7 @@ if ($total_sales > 0) {
                     </div>
                 </div>
             </div>
-
             <div class="col-sm-4">
-
                 <div class="box box-default">
                     <div class="box-header">
                         <?=lang('hd_lang.invoices')?>: <?//=AppLib::format_currency($cur->code, $total_sales);?>
@@ -79,13 +75,10 @@ if ($total_sales > 0) {
                         </div>
                     </div>
                 </div>
-
-
                 <div class="box box-solid">
                     <div class="box-body">
                         <div class="table-responsive">
                             <table class="table no-margin">
-
                                 <tbody>
                                     <tr>
                                         <td><?=lang('hd_lang.total_sales')?> </td>
@@ -125,9 +118,6 @@ if ($total_sales > 0) {
         </div>
 
         <div class="row ">
-
-
-
             <!-- 1st Quarter -->
             <div class="col-md-3 col-sm-6">
                 <div class="box box-info">
@@ -331,7 +321,7 @@ if ($total_sales > 0) {
                                     <div><a href="<?=base_url()?>invoices/view/<?=$i->inv_id?>">
                                             <?=$i->reference_no;?></a>
                                         <small class="text-muted pull-right">
-                                            <?php if ($i->currency != config_item('default_currency')) {
+                                            <?php if ($i->currency != $helper->getconfig_item('default_currency')) {
                                 echo Applib::format_currency($cur->code,Applib::convert_currency($i->currency, Invoice::get_invoice_due_amount($i->inv_id)));
                                   }else{
                                 echo Applib::format_currency($cur->code,Invoice::get_invoice_due_amount($i->inv_id));
@@ -358,7 +348,7 @@ if ($total_sales > 0) {
     <!-- end -->
 
 
-    <script src="<?=base_url()?>resource/js/charts/chartjs/Chart.min.js"></script>
+    <script src="<?=base_url()?>public/js/charts/chartjs/Chart.min.js"></script>
     <script type="text/javascript">
     (function($) {
         "use strict";
