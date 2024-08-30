@@ -1,4 +1,4 @@
-<?php
+<?php 
 /*
  * This file is part of WHATPANEL.
  *
@@ -154,11 +154,11 @@ $custom = new custom_name_helper();
 			?>
 
 
-			<button type="submit" class="common-button mt-3 btn btn-sm btn-<?= $custom->getconfig_item('theme_color') ?>"><i class="fa fa-ticket"></i>
+			<button type="submit" class="common-button mt-3 btn btn-sm btn-<?= $custom->getconfig_item('theme_color') ?>" ><i class="fa fa-ticket"></i>
 				<?= lang('hd_lang.create_ticket') ?>
 			</button>
 
-			</form>
+			<?php echo form_close(); ?>
 
 		<?php } else {
 			$attributes = array('class' => 'bs-example form-horizontal');
@@ -195,9 +195,10 @@ $custom = new custom_name_helper();
 				<?= lang('hd_lang.select_department') ?>
 			</button>
 
-			</form>
+			<?php echo form_close(); ?>
 		<?php } ?>
-		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	</div>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 			<script>
 				$(document).ready(function() {
 					// Function to handle department selection
@@ -244,7 +245,6 @@ $custom = new custom_name_helper();
 					}
 				});
 			</script>
-	</div>
 	<?= $this->endSection() ?>
 </div>
 

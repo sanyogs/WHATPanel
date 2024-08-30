@@ -224,9 +224,10 @@ class Domains extends WhatPanel
 				}
 			}
 
-			$session->setFlashdata('response_status', 'success');
-			$session->setFlashdata('message', $result);
-			redirect($_SERVER['HTTP_REFERER']);
+			session()->setFlashdata('response_status', 'success');
+			$referer = $this->request->getServer('HTTP_REFERER');
+			session()->setFlashdata('success', lang('hd_lang.user_edited_successfully'));
+			return redirect()->to($referer);
 		} else {
 			$data['item'] = Order::get_order($id);
 			$data['servers'] = $db->table('hd_servers')->get()->getResult();
@@ -255,7 +256,7 @@ class Domains extends WhatPanel
 			if ($request->getPost('cancel_domain') == 'on') {
 				$db->table('hd_orders')->set('status_id', 7)->where('id', $order_id)->update();
 
-				if ($this->db->affectedRows() > 0) {
+				if ($db->affectedRows() > 0) {
 					$result = "Domain: " . $domain . " cancelled!";
 
 					if ($request->getPost('order') == 'domain_only') {
@@ -265,8 +266,9 @@ class Domains extends WhatPanel
 			}
 
 			session()->setFlashdata('response_status', 'success');
-			session()->setFlashdata('message', $result);
-			redirect($_SERVER['HTTP_REFERER']);
+			$referer = $this->request->getServer('HTTP_REFERER');
+			session()->setFlashdata('success', lang('hd_lang.user_edited_successfully'));
+			return redirect()->to($referer);
 		} else {
 			$data['item'] = Order::get_order($id);
 			$data['servers'] = $db->table('hd_servers')->get()->getResult();
@@ -294,7 +296,7 @@ class Domains extends WhatPanel
 				
 				$db->table('hd_orders')->set('status_id', 8)->where('id', $order_id)->update();
 
-				if ($this->db->affectedRows() > 0) {
+				if ($db->affectedRows() > 0) {
 					$result = "Domain: " . $domain . " deleted!";
 
 					if ($request->getPost('order') == 'domain_only') {
@@ -304,8 +306,9 @@ class Domains extends WhatPanel
 			}
 
 			session()->setFlashdata('response_status', 'success');
-			session()->setFlashdata('message', $result);
-			redirect($_SERVER['HTTP_REFERER']);
+			$referer = $this->request->getServer('HTTP_REFERER');
+			session()->setFlashdata('success', lang('hd_lang.user_edited_successfully'));
+			return redirect()->to($referer);
 		} else {
 			$data['item'] = Order::get_order($id);
 			$db = \Config\Database::connect();

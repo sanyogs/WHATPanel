@@ -157,7 +157,7 @@ $helper = new whatpanel_helper();
             <a class="navbar-brand" href="<?=base_url()?>home">
               <span>
                 <img
-                  src="<?= base_url('assets/images/header/madpopo-dark-logo.svg'); ?>"
+                  src="<?= base_url('assets/images/header/logo.png'); ?>"
                   alt=""
                   width="135"
                   height="77"
