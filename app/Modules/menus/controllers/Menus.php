@@ -278,8 +278,7 @@ class Menus extends WhatPanel
      * Show menu pages
      */
     public function menu($group_id)
-    {
-        // echo $group_id;die;
+    {   
         $session = \Config\Services::session();
 
         // Connect to the database
@@ -316,8 +315,7 @@ class Menus extends WhatPanel
         $data['page'] = $data['group_title'];
         $data['menus'] = true;
         $data['menuList'] = $menu;
-            // echo "<pre>";
-            // print_r($data);die;
+  
         return view('modules/menus/views/menus', $data);
     }
 
@@ -392,7 +390,7 @@ class Menus extends WhatPanel
         // echo 1; die;
         $data = array();
         $request = \Config\Services::request();
-
+        
         $title = $request->getPost('title');
         $url = $request->getPost('url');
         $group_id = $request->getPost('group_id');
@@ -814,21 +812,34 @@ class Menus extends WhatPanel
         echo json_encode($menuDetail);
     }
 	
-	public function selected_page()
-	{
-		$request = \Config\Services::request();
-
-		if ($request->getMethod() === 'post') {
-			$selected_pages = $request->getPost('selected_pages');
-
-			// Insert or update data in hd_menu table
-			foreach ($selected_pages as $page_id) {
-				$db = \Config\Database::connect();
-				$db->table('hd_menu')->insert(['page_id' => $page_id, 'title' => 'Your default title']); // or update logic
-			}
-
-			return redirect()->to('menus/menu'); // redirect to the desired page
-		}
-	}
+    public function selected_page()
+    {
+        $request = \Config\Services::request();
+        $response = \Config\Services::response();
+        
+        if ($request->getMethod() === 'post') {
+            $selected_pages = $request->getPost('selected_pages');
+       
+            // Check if selected_pages is an array
+            if (is_array($selected_pages)) {
+                $db = \Config\Database::connect();
+                $builder = $db->table('hd_menu');
+    
+                // Insert or update data in hd_menu table
+                foreach ($selected_pages as $page_id) {
+                    // Ensure you use the correct column name and value
+                    $builder->where('page', $page_id)->update(['group_id' => 1]);
+                }
+    
+                return $response->setJSON(['status' => 'success', 'message' => 'Pages saved successfully']);
+            } else {
+                return $response->setJSON(['status' => 'error', 'message' => 'No pages selected']);
+            }
+        }
+    
+        return $response->setJSON(['status' => 'error', 'message' => 'Invalid request method']);
+    }
+    
+    
 
 }

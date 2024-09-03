@@ -24,7 +24,7 @@ $custom_helper = new custom_name_helper();
 
 <body>
   <!-- Topbar Start -->
-  <section id="topbarSection" class="innerHeader" style="padding-bottom: 30rem !important;">
+  <section id="topbarSection" class="innerHeader" style="padding-bottom: 37rem !important;">
     <!-- Navbar Start -->
     <?= view($custom_helper->getconfig_item('active_theme') . '/views/sections/header.php'); ?>
     <!-- Navbar End -->
@@ -35,7 +35,7 @@ $custom_helper = new custom_name_helper();
   </section>
   <div class="row">
     <div class="col-md-12">
-      <?php $helper->blocks('full_width_top', $helper->get_slug()); ?>
+      <?php //$helper->blocks('full_width_top', $helper->get_slug()); ?>
     </div>
   </div>
   <!-- Topbar End -->
@@ -96,8 +96,6 @@ $custom_helper = new custom_name_helper();
       </div>
     </div>
   </section>
-
-
 
   <!-- Normal width -->
   <section class="whitesmoke-wrapper">

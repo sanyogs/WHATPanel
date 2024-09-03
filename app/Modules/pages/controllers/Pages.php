@@ -188,9 +188,6 @@ class Pages extends WhatPanel
 	
   public function edit($id = NULL)
   {
-    error_reporting(E_ALL);
-    ini_set("display_errors", "1");
-    // echo 90;die;
     if (User::is_client()) {
       //Applib::go_to('clients', 'error', lang('hd_lang.access_denied'));
     }
@@ -240,11 +237,12 @@ class Pages extends WhatPanel
         'meta_desc',
         //'knowledge',
        // 'faq',
-        'menu',
+       // 'menu',
         //'faq_id',
         //'knowledge_id',
         //'video'
       );
+ 
       $data = $modal->array_from_post($pageArray);
 
       if ($id == null) {
@@ -273,16 +271,16 @@ class Pages extends WhatPanel
             if ($id == null) { 
               $menu['title'] = $request->getPost('title');
               $menu['url'] = $request->getPost('slug');
-              $menu['group_id'] = $request->getPost('menu');
+              //$menu['group_id'] = $request->getPost('menu');
               $menu['page'] = $post_id;
               $menu['active'] = 1;
               $db->table('hd_menu')->insert($menu);
 			 	$this->append_page();
             }
-            if ($id && $request->getPost('menu') > 0) { echo 5;die;
+            if ($id && $request->getPost('menu') > 0) {
               $menu['title'] = $request->getPost('title');
               $menu['url'] = $request->getPost('slug');
-              $menu['group_id'] = $request->getPost('menu');
+              //$menu['group_id'] = $request->getPost('menu');
               $menu['page'] = $id;
               $menu['active'] = 1;
               if ($db->table('hd_menu')->where('page', $id)->get()->getNumRows() == '0') {
@@ -420,6 +418,12 @@ class Pages extends WhatPanel
     //$this->template->set_partial('footer', 'sections/footer');
     //echo "<pre>";print_r($data);die;
     echo view($helper->getconfig_item("active_theme") . '/views/pages/page', $data);
+  }
+
+  public function knowledgebase($slug = null)
+  { 
+    $helper = new custom_name_helper();
+    echo view($helper->getconfig_item("active_theme") . '/views/blocks/knowledgebase');
   }
 
   public function delete_multi_old()

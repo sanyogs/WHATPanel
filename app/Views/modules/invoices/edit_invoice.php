@@ -14,10 +14,23 @@ use App\Models\Invoice;
 use App\Models\Item;
 use App\Models\Plugin;
 use App\Models\User;
+use App\Models\Payment;
 
 use App\Helpers\custom_name_helper;
 
 $custom = new custom_name_helper();
+
+$payment_statuses = [
+    lang('hd_lang.paid') => lang('hd_lang.paid'),
+    lang('hd_lang.unpaid') => lang('hd_lang.unpaid'),
+	'Cancelled' => lang('hd_lang.cancel'),
+    lang('hd_lang.pending') => lang('hd_lang.pending'),
+];
+
+$current_status = Invoice::payment_status($id);
+$mode = App::get_method_by_id($payments[0]->payment_method);
+$model = new Payment();
+$payment_method = $db->table('hd_payment_methods')->get()->getResult();
 
 ?>
 
@@ -184,7 +197,27 @@ $custom = new custom_name_helper();
                     </div>
                 </div>
 
-
+                <div class="form-group mb-3 row">
+					<label class="col-lg-3 control-label common-label"><?= lang('hd_lang.payment_method') ?></label>
+					<div class="col-lg-8">
+						<select name="payment_status" class="form-control common-select">
+							<?php foreach ($payment_statuses as $key => $item):?>
+							<option value="<?= $key ?>" <?= $key === $current_status ? 'selected' : '' ?>><?= $item ?></option>
+							<?php endforeach;?>
+                    	</select>
+					</div>
+				</div>
+				
+				<div class="form-group mb-3 row">
+                    <label class="col-lg-3 control-label common-label"><?=lang('hd_lang.payment_mode')?></label>
+                    <div class="col-lg-8">
+                        <select name="currency" class="form-control common-select">
+                           <?php foreach ($payment_method as $key => $value):?>
+							<option value="<?= $value->method_id ?>"><?= $value->method_name ?></option>
+							<?php endforeach;?>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
 

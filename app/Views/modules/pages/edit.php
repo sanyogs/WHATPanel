@@ -131,21 +131,21 @@ use function App\Libraries\form_error;?>
                                     </label>
                                 </div>
                             </div>
-                            <div class="row">
-								<label class="col-md-6 common-label"><?=lang('hd_lang.show_in_menu')?></label>
+                            <!-- <div class="row">
+								<label class="col-md-6 common-label"><?//=lang('hd_lang.show_in_menu')?></label>
 								<div class="col-md-6">
 									<select name="menu" class="form-control common-select">
-										<option value="0"><?=lang('hd_lang.none')?></option>
-										<?php
-										foreach ($data['menu_groups'] as $menu) { ?>
-										<option value="<?= $menu->id ?>"
-											<?= (isset($content['menu']) && $menu->id == $content['menu']) ? 'selected' : '' ?>>
-											<?= $menu->title ?>
+										<option value="0"><?//=lang('hd_lang.none')?></option>
+										<?//php
+										//foreach ($data['menu_groups'] as $menu) { ?>
+										<option value="<?//= $menu->id ?>"
+											<?//= (isset($content['menu']) && $menu->id == $content['menu']) ? 'selected' : '' ?>>
+											<?//= $menu->title ?>
 										</option>
-										<?php } ?>
+										<?//php } ?>
 									</select>
 								</div>
-							</div>
+							</div> -->
                         </div>
                     </div>
                 </div>

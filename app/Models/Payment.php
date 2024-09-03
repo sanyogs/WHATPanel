@@ -297,4 +297,18 @@ class Payment extends Model
             'message' => $message
         ];
     }
+
+    public function payment_mode($invoice_id)
+	{	
+		$db = \Config\Database::connect();
+		$mode = $db->table('hd_payments')
+					->select('hd_payments.*, hd_invoices.inv_id, hd_invoices.status')
+					->join('hd_invoices', 'hd_payments.invoice = hd_invoices.inv_id')
+					->orderBy('hd_payments.created_date', 'desc')
+					->where('hd_payments.invoice', $invoice_id)
+					->where('hd_payments.inv_deleted', 'No')
+					->get()
+					->getResult();
+		return $mode;
+	}
 }

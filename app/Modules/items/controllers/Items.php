@@ -1324,6 +1324,51 @@ $db->table('hd_items_saved')->insert(['item_name' => str_replace('.', '', $reque
 		$viewContent = view('modules/items/modal/add_' . $view_file);
 		return json_encode(['content' => $viewContent]);
 	}
+
+	public function menus_block($group_id)
+    {
+        $helper = new custom_name_helper();
+        $db = \Config\Database::connect(); // Get database connection
+        $object = new \stdClass();
+        $object->id = $group_id;
+        $main_menu = [];
+
+        $menu = $db->table('hd_menu')->select('*')->where('group_id', $group_id)->orderBy('position', 'DESC')->where('active', 1)->get()->getResult();
+
+        foreach ($menu as $item) {
+            if ($item->parent_id == 0) {
+                $main_menu[] = $item;
+            }
+        }
+
+        foreach ($main_menu as $main_item) {
+            $parent_menu = [];
+            foreach ($menu as $menu_item) {
+                if ($menu_item->parent_id == $main_item->id) {
+                    $parent_menu[] = $menu_item;
+                }
+            }
+            $main_item->parent_menu = $parent_menu;
+        }
+
+        foreach ($main_menu as $main_item) {
+            foreach ($main_item->parent_menu as $parent_menu_item) {
+                $parent_submenu = [];
+                foreach ($menu as $submenu_item) {
+                    if ($parent_menu_item->id == $submenu_item->parent_id) {
+                        $parent_submenu[] = $submenu_item;
+                    }
+                }
+                $parent_menu_item->parent_submenu = array_unique($parent_submenu, SORT_REGULAR);
+            }
+        }
+
+        $object->main_menu = $main_menu;
+
+        $data['menu'] = $object;
+        //echo"<pre>";print_r($data);die;
+        echo view($helper->getconfig_item('active_theme') . '/views/blocks/menu_block', $data);
+    }
 }
 
 /* End of file items.php */

@@ -27,7 +27,7 @@ $domains = $domainController->domain_pricing();
 
 $custom_helpers = new custom_name_helper();
 ?>
-<section id="domain-table-wrap">
+<section id="domain-table-wrap" style="margin-top: 11px;">
     <div class="container">
         <div class="domain-topbar-wrap">
             <div class="domain-title-wrap">
