@@ -159,7 +159,7 @@ $helper = new whatpanel_helper();
                 <img
                   src="<?= base_url('assets/images/header/logo.png'); ?>"
                   alt=""
-                  width="135"
+                  width="230"
                   height="77"
                   class="img-fluid"
                 />

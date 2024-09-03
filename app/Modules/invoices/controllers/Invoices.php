@@ -846,13 +846,14 @@ class Invoices extends WhatPanel
                             'value1' => $_POST['reference_no'],
                         );
                         App::Log($activity); // Log activity
-//print_r($activity['value1']);die;
+                        //print_r($activity['value1']);die;
                         return redirect()->to('invoices/view/' . $invoice_id);
 
                         // Applib::go_to('invoices/view/'.$invoice_id, 'success', lang('hd_lang.invoice_edited_successfully'));
                     }
                 }
             } else {
+                $payment = new Payment();
                 $data['page'] = lang('hd_lang.edit_invoice');
                 $data['datepicker'] = true;
                 $data['form'] = true;
@@ -861,6 +862,7 @@ class Invoices extends WhatPanel
                 $data['invoices'] = $this->_show_invoices();
                 $data['currencies'] = App::currencies();
                 $data['id'] = $invoice_id;
+                $data['payments'] = $payment->payment_mode($invoice_id);
                 return view('modules/invoices/edit_invoice', $data);
             }
         } else {

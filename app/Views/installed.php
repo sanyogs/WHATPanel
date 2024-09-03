@@ -48,7 +48,7 @@
     </div>
     <div class="textOverlayBox">
     <h1>Installed...!</h1>
-    <span>Thank you for installing Hosting Billing</span>
+    <span>Thank you for installing WHATPanel</span>
     <a href="<?= site_url("login") ?>" class="checkBtn">Check it out</a>
     </div>
 </section>

@@ -170,11 +170,10 @@ class Installer extends MX_Controller
         $baseURL = env('app.baseURL');
 		$version = config('App')->version;
 		//echo $version; die;
-		if (!$this->_initialize_db($version)) {
+		if (!$this->_initialize_db($version)) { 
 			$session->setFlashdata('message', 'Database import failed. Check if the file exists:' . $baseURL . $version . '.sql');
 			return redirect()->to('installer_steps/4');
 		}
-
 		$this->_step_complete('verify_purchase', '5');
 		return redirect()->to('installer_steps/5');
 	}

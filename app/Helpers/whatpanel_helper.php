@@ -193,7 +193,26 @@ class whatpanel_helper {
 			  { 
 				  $row = array();
 				  $custom_block = $db->table('hd_blocks_custom')->where('id', $block->id)->get()->getRow();
-				  $row['content'] = ($custom_block->format=='php') ? eval($custom_block->code) : $custom_block->code;
+          if ($custom_block && $custom_block->format == 'php') {
+            // Sanitize and format the PHP code
+            $php_code = $custom_block->code;
+        
+            // Capture the output of the PHP code
+            ob_start();
+            try {
+                eval('?>' . $php_code);
+                $row['content'] = ob_get_clean();
+            } catch (\ParseError $e) {
+                log_message('error', 'Eval failed: ' . $e->getMessage() . ' in code: ' . $php_code);
+                $row['content'] = 'An error occurred while processing the block.';
+            } catch (\Exception $e) {
+                log_message('error', 'Exception occurred: ' . $e->getMessage() . ' in code: ' . $php_code);
+                $row['content'] = 'An error occurred while processing the block.';
+            }
+        } else {
+            $row['content'] = $custom_block->code; // Sanitize code if not PHP
+        }
+				  //$row['content'] = ($custom_block->format=='php') ? eval($custom_block->code) : $custom_block->code;
 				  $row['id'] = $this->block_id($block->name, $key);
 				  $row['format'] = $custom_block->format;
 				  $row['weight'] = $block->weight; 
@@ -212,10 +231,10 @@ class whatpanel_helper {
 							  $menus = new Menus();
 							  $fun_name = strtolower($module_block->module) . '_block';
 							  $content = $menus->{$fun_name}($part[1]);
-							  break;
+                break;
 						  case 'Items':
 							  $items = new Items();
-							  $fun_name = strtolower($module_block->module) . '_block';
+						    $fun_name = strtolower($module_block->module) . '_block';
 							  $content = $items->{$fun_name}($part[1]);
 							  break;
 					  }
