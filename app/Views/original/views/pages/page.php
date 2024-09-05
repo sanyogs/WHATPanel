@@ -35,7 +35,7 @@ $custom_helper = new custom_name_helper();
   </section>
   <div class="row">
     <div class="col-md-12">
-      <?php //$helper->blocks('full_width_top', $helper->get_slug()); ?>
+      <?php $helper->blocks('full_width_top', $helper->get_slug()); ?>
     </div>
   </div>
   <!-- Topbar End -->
@@ -60,7 +60,7 @@ $custom_helper = new custom_name_helper();
 
     <?php $helper->blocks('content_top', $helper->get_slug()); ?>
 
-    <?= $content->body; ?>
+    <?= $contents; ?>
 
     <?php
 

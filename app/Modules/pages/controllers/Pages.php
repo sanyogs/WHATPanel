@@ -29,6 +29,9 @@ use DateTime;
 use Config\Services;
 use App\Models\Categories;
 use App\Helpers\custom_name_helper;
+use DOMDocument;
+use HTMLPurifier;
+use HTMLPurifier_Config;
 
 class Pages extends WhatPanel
 {
@@ -101,9 +104,9 @@ class Pages extends WhatPanel
     $template->title(lang('hd_lang.page') . ' - ' . $helper->getconfig_item('company_name'));
     $data['page'] = lang('hd_lang.pages');
     $data['datatables'] = true;
-	$request = \Config\Services::request();
+	  $request = \Config\Services::request();
 	  
-	// Pagination Configuration
+	  // Pagination Configuration
 	  $page = $request->getGet('page') ? $request->getGet('page') : 1;
 
 	  $perPage = $request->getGet('recordsPerPage', FILTER_SANITIZE_NUMBER_INT) ? $request->getGet('recordsPerPage', FILTER_SANITIZE_NUMBER_INT) : 10;
@@ -125,30 +128,85 @@ class Pages extends WhatPanel
 
 	  $data['perPage'] = $perPage;
 
-    // $language = Services::language();
-    // $language->load('hd', 'en');
-
-    //echo "<pre>";print_r($data);die;
-
     echo view('modules/pages/index', $data);
   }
 
-  public function add()
+  public function create()
   {
-    $helper = new custom_name_helper();
-    $template = new Template();
-    $data['menu_groups'] = $this->Menu->get_menu_groups();
-    $template->title(lang('page') . ' - ' . $helper->getconfig_item('company_name'));
-    $data['page'] = lang('page');
-    $data['pages'] = true;
-    $data['editor'] = true;
-    $data['sidebar_right'] = true;
-    $data['sidebar_left'] = true;
-    // echo"<pre>";print_r($data);die;
-    // return view('App\Modules\Pages\Views\add');
-    echo view('modules/pages/add', $data);
-  }
+      $modal = new Page();
+      $request = \Config\Services::request();
+      $helper = new custom_name_helper();
+      $db = \Config\Database::connect();
 
+      if ($request->getPost()) {
+          if (User::is_client()) {
+              Applib::go_to('clients', 'error', lang('hd_lang.access_denied'));
+          }
+          $this->_unique_slug();
+          $data['content'][] = $modal->get_new();
+          $data['item_id'] = 0;
+          $data['page_title'] = lang('hd_lang.add');
+          $data['mode'] = 'add';
+
+          Applib::is_demo();
+          $rules = $modal->rules();
+          $validation = \Config\Services::validation();
+          $validation->setRules($rules);
+
+          if ($validation->run($request->getPost()) === TRUE) {
+              $pageArray = array(
+                  'title',
+                  'slug',
+                  'status',
+                  'sidebar_right',
+                  'sidebar_left',
+                  'meta_title',
+                  'meta_desc',
+              );
+
+              $data = $modal->array_from_post($pageArray);
+              array_push($pageArray, 'user_id', session()->get('user_id'));
+
+              $data['sidebar_right'] = ($data['sidebar_right'] == 'on') ? 1 : 0;
+              $data['sidebar_left'] = ($data['sidebar_left'] == 'on') ? 1 : 0;
+              $data['status'] = ($data['status'] == 'on') ? 1 : 0;
+              $data['meta_title'] = ($data['meta_title'] == '') ? $data['title'] : $data['meta_title'];
+              $data['meta_desc'] = ($data['meta_desc'] == '') ? $helper->getconfig_item('site_desc') : $data['meta_desc'];
+              $data['post_type'] = 'page';
+              $data['category_id'] = '0';
+              $data['body'] = $request->getPost('body');
+
+              if ($db->table('hd_posts')->insert($data)) {
+                  $post_id = $db->insertID();
+                  if ($request->getPost('slug') != 'home') {
+                      $menu = array();
+                      $menu['title'] = $request->getPost('title');
+                      $menu['url'] = $request->getPost('slug');
+                      $menu['page'] = $post_id;
+                      $menu['active'] = 1;
+                      $db->table('hd_menu')->insert($menu);
+                      $this->append_page();
+                  }
+                  return redirect()->to('/pages');
+              }
+          }
+      } else {
+          $menu_modal = new Menu();
+          $data['menu_groups'] = $menu_modal->get_menu_groups();
+          $template = new Template();
+          $template->title(lang('hd_lang.page') . ' - ' . $helper->getconfig_item('company_name'));
+          $data['page'] = lang('hd_lang.page');
+          $data['pages'] = true;
+          $data['editor'] = true;
+          $data['sidebar_right'] = true;
+          $data['sidebar_left'] = true;
+          $data['content'] = Null;
+          $data['mode'] = 'add';
+
+          echo view('modules/pages/edit', ['data' => isset($data) ? $data : NULL], ['layout' => 'users']);
+      }
+  }
+  
   function append_page()
   {	
 	$db = \Config\Database::connect();
@@ -186,137 +244,84 @@ class Pages extends WhatPanel
   }
 	
 	
-  public function edit($id = NULL)
-  {
-    if (User::is_client()) {
-      //Applib::go_to('clients', 'error', lang('hd_lang.access_denied'));
-    }
-    $modal = new Page();
-    $request = \Config\Services::request();
-    $helper = new custom_name_helper();
-    $db = \Config\Database::connect();
-
-    $mode = null;
-    if ($id) {
-      $data['content'] = $modal->get($id);
-      $oldSlug = $data['content'][0]->slug;
-      count($data['content']) || $data['errors'][] = 'page could not be found';
-      $data['page_title'] = lang('hd_lang.edit');
-      $data['mode'] = 'edit';
-      $mode = 'edit';
-    } else {
-      $this->_unique_slug();
-      $data['content'][] = $modal->get_new();
-      $data['item_id'] = 0;
-      $data['page_title'] = lang('hd_lang.add');
-      $data['mode'] = 'add';
-      $mode = 'add';
-      //print_r($request->getPost());die;
-    }
-
-    if ($request->getPost()) {
-      Applib::is_demo();
-      $rules = $modal->rules();
-      $validation = \Config\Services::validation();
-      $validation->setRules($rules);
-
-      if ($validation->run($request->getPost()) === TRUE) {
-        if (!$id && $db->table('hd_posts')->where('slug', $request->getPost('slug'))->get()->getNumRows() > 0) {
-          session()->setFlashdata('response_status', 'warning');
-          session()->setFlashdata('message', lang('hd_lang.path_exists'));
-          return redirect()->back();
-        }
+  public function edit($id)
+  {   
+      $modal = new Page();
+      $request = \Config\Services::request();
+      $helper = new custom_name_helper();
+      $db = \Config\Database::connect();
+      if (User::is_client()) {
+          Applib::go_to('clients', 'error', lang('hd_lang.access_denied'));
       }
-      $pageArray = array(
-        'title',
-        'slug',
-        'status',
-        'sidebar_right',
-        'sidebar_left',
-        'meta_title',
-        'meta_desc',
-        //'knowledge',
-       // 'faq',
-       // 'menu',
-        //'faq_id',
-        //'knowledge_id',
-        //'video'
-      );
- 
-      $data = $modal->array_from_post($pageArray);
-
-      if ($id == null) {
-        array_push($pageArray, 'user_id', session()->get('user_id'));
-      }
-
-      $data['sidebar_right'] = ($data['sidebar_right'] == 'on') ? 1 : 0;
-      $data['sidebar_left'] = ($data['sidebar_left'] == 'on') ? 1 : 0;
-      $data['status'] = ($data['status'] == 'on') ? 1 : 0;
-     // $data['knowledge'] = ($data['knowledge'] == 'on') ? 1 : 0;
-      //$data['faq'] = ($data['faq'] == 'on') ? 1 : 0;
-      $data['meta_title'] = ($data['meta_title'] == '') ? $data['title'] : $data['meta_title'];
-      $data['meta_desc'] = ($data['meta_desc'] == '') ? $helper->getconfig_item('site_desc') : $data['meta_desc'];
-      $data['post_type'] = 'page';
-      $data['category_id'] = '0';
-      //$data['body'] = $db->escapeString($request->getPost('body'));
-      $data['body'] = $request->getPost('body');
-
-	 $query = $db->table('hd_menu')->where('title', $request->getPost('title'))->get()->getRow();
-		 
-      if ($id == '' || $query != $request->getPost('title')) { 
-        if ($db->table('hd_posts')->insert($data)) { 
-			$post_id = $db->insertID();
-          if ($request->getPost('slug') != 'home') { 
-            $menu = array();
-            if ($id == null) { 
-              $menu['title'] = $request->getPost('title');
-              $menu['url'] = $request->getPost('slug');
-              //$menu['group_id'] = $request->getPost('menu');
-              $menu['page'] = $post_id;
-              $menu['active'] = 1;
-              $db->table('hd_menu')->insert($menu);
-			 	$this->append_page();
-            }
-            if ($id && $request->getPost('menu') > 0) {
-              $menu['title'] = $request->getPost('title');
-              $menu['url'] = $request->getPost('slug');
-              //$menu['group_id'] = $request->getPost('menu');
-              $menu['page'] = $id;
-              $menu['active'] = 1;
-              if ($db->table('hd_menu')->where('page', $id)->get()->getNumRows() == '0') {
-                $db->table('hd_menu')->insert($menu);
-              } else {
-                $db->table('hd_menu')->where('page', $id)->update($menu);
+  
+      if ($request->getPost()) {
+          Applib::is_demo();
+          $rules = $modal->rules();
+          $validation = \Config\Services::validation();
+          $validation->setRules($rules);
+  
+          if ($validation->run($request->getPost()) === TRUE) {
+              $pageArray = array(
+                  'title',
+                  'slug',
+                  'status',
+                  'sidebar_right',
+                  'sidebar_left',
+                  'meta_title',
+                  'meta_desc',
+              );
+  
+              $data = $modal->array_from_post($pageArray);
+  
+              $data['sidebar_right'] = ($data['sidebar_right'] == 'on') ? 1 : 0;
+              $data['sidebar_left'] = ($data['sidebar_left'] == 'on') ? 1 : 0;
+              $data['status'] = ($data['status'] == 'on') ? 1 : 0;
+              $data['meta_title'] = ($data['meta_title'] == '') ? $data['title'] : $data['meta_title'];
+              $data['meta_desc'] = ($data['meta_desc'] == '') ? $helper->getconfig_item('site_desc') : $data['meta_desc'];
+              $data['post_type'] = 'page';
+              $data['category_id'] = '0';
+              $data['body'] = $request->getPost('body');
+  
+              if ($db->table('hd_posts')->where('id', $id)->update($data)) 
+              {   
+                  if ($request->getPost('slug') != 'home') {
+                      $menu = array();
+                      $menu['title'] = $request->getPost('title');
+                      $menu['url'] = $request->getPost('slug');
+                      $menu['page'] = $id;
+                      $menu['active'] = 1;
+                      if ($db->table('hd_menu')->where('page', $id)->get()->getNumRows() == '0') {
+                          $db->table('hd_menu')->insert($menu);
+                      } else {
+                          $db->table('hd_menu')->where('page', $id)->update($menu);
+                      }
+                  }
+                  if ($request->getPost('menu') == 0) {
+                      $db->table('hd_menu')->where('page', $id)->delete();
+                  }
+                  return redirect()->to('/pages');
               }
-            }
           }
-          if ($id && $request->getPost('menu') == 0) { 
-            // echo $id;die;
-            $db->table('hd_menu')->where('page', $id)->delete();
-          }
-        }
-      } else { 
-        if ($request->getPost('slug') != 'home') {
-          $db->table('hd_posts')->where('id', $id)->update($data);
-        }
+      }else {
+        $menu_modal = new Menu();
+        $data['menu_groups'] = $menu_modal->get_menu_groups();
+        $template = new Template();
+        $template->title(lang('hd_lang.page') . ' - ' . $helper->getconfig_item('company_name'));
+        $data['page'] = lang('hd_lang.page');
+        $data['pages'] = true;
+        $data['editor'] = true;
+        $data['sidebar_right'] = true;
+        $data['sidebar_left'] = true;
+        $data['content'] = $modal->get($id);
+        $oldSlug = $data['content'][0]->slug;
+        count($data['content']) || $data['errors'][] = 'page could not be found';
+        $data['page_title'] = lang('hd_lang.edit');
+        $data['mode'] = 'edit';
+        
+        echo view('modules/pages/edit', ['data' => isset($data) ? $data : NULL], ['layout' => 'users']);
       }
-
-      //session()->setFlashdata('message', lang('hd_lang.saved', 'hd_lang.saved'));
-      return redirect()->to('pages');
-    }
-    $menu_modal = new Menu();
-    $data['menu_groups'] = $menu_modal->get_menu_groups();
-    $template = new Template();
-    $template->title(lang('hd_lang.page') . ' - ' . $helper->getconfig_item('company_name'));
-    $data['page'] = lang('hd_lang.page');
-    $data['pages'] = true;
-    $data['editor'] = true;
-    $data['sidebar_right'] = true;
-    $data['sidebar_left'] = true;
-    //echo"<pre>";print_r($data['content']);die;
-    echo view('modules/pages/edit', ['data' => isset($data) ? $data : NULL], ['layout' => 'users']);
   }
-
+  
   public function store()
   {
     $request = \Config\Services::request();
@@ -412,12 +417,17 @@ class Pages extends WhatPanel
     $template->title((empty($data['content']->meta_title)) ? $data['content']->title : $data['content']->meta_title . ' | ' . $helper->getconfig_item('site_name'));
     $template->set_metadata('description', (empty($data['content']->meta_desc)) ? $helper->getconfig_item('site_desc') : $data['content']->meta_desc);
     $template->set_breadcrumb($data['content']->title, base_url() . $slug);
-    // $data['page'] = $data['content']->title;
-    //$this->template->set_theme($helper->getconfig_item('active_theme'));
-    //$this->template->set_partial('header', 'sections/header');
-    //$this->template->set_partial('footer', 'sections/footer');
-    //echo "<pre>";print_r($data);die;
+    $doc = new DOMDocument();
+    $doc->loadHTML($data['content']->body);
+    $data['contents'] = $doc->textContent;
+   
     echo view($helper->getconfig_item("active_theme") . '/views/pages/page', $data);
+  }
+
+  public function domain_registration($slug = null)
+  { 
+    $helper = new custom_name_helper();
+    echo view($helper->getconfig_item("active_theme") . '/views/blocks/domain_pricing_table');
   }
 
   public function knowledgebase($slug = null)

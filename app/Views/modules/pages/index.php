@@ -37,12 +37,12 @@ $helper= new whatpanel_helper();
               />
             </svg>
           </span>
-		 <form method='get' action="<?php echo base_url('pages'); ?>" id="searchForm">
+		    <form method='get' action="<?php echo base_url('pages'); ?>" id="searchForm">
             <input type="text" name="search" placeholder="Search" />
             <a href="<?php echo base_url('pages'); ?>" class="btn new-hosting-div bg-danger clrBtn">Clear</a>
          </form>
         </div>
-        <a href="<?= base_url('pages/edit') ?>"
+        <a href="<?= base_url('pages/create') ?>"
           class="new-hosting-div"
           data-bs-toggle="modal"
           data-bs-target="#add-new-hosting-modal"

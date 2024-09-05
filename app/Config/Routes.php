@@ -396,14 +396,17 @@ $routes->group('sliders', ['filter' => 'sessionsCheck', 'namespace' => 'App\Modu
 });
 
 $routes->group('pages', ['filter' => 'sessionsCheck','namespace' => 'App\Modules\pages\controllers'], function ($subroutes) {
-	$subroutes->get('help', 'Pages::page/help');
+	$subroutes->get('knowledgebase', 'Pages::page/knowledgebase');
+	$subroutes->get('iuytres', 'Pages::page/iuytres');
+	$subroutes->get('knowledgebase', 'Pages::page/knowledgebase');
+	$subroutes->get('vdccvgbhjbgvfc', 'Pages::page/vdccvgbhjbgvfc');
+	$subroutes->get('bvcxzxdcfvgh', 'Pages::page/bvcxzxdcfvgh');
 	$subroutes->get('/', 'Pages::index', ['as' => 'pages.page']);
-	$subroutes->get('domain_registration', 'Pages::page/domain_registration');
-	$subroutes->get('Knowledgebase', 'Pages::Knowledgebase');
-    $subroutes->get('add', 'Pages::add', ['as' => 'pages.add']);
+    $subroutes->get('add', 'Pages::add');
+    $subroutes->get('create', 'Pages::create');
+    $subroutes->post('create', 'Pages::create');
     $subroutes->post('store', 'Pages::store');
     $subroutes->get('edit/(:num)', 'Pages::edit/$1');
-	$subroutes->get('edit', 'Pages::edit');
 	$subroutes->post('edit', 'Pages::edit');
 	$subroutes->post('edit/(:num)', 'Pages::edit/$1');
     $subroutes->post('update/(:num)', 'Pages::update/$1');

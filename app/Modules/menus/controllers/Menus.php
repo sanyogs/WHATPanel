@@ -407,8 +407,7 @@ class Menus extends WhatPanel
             if (!empty($data['title'])) {
 				
 				foreach ($selected_pages as $page_id) {
-				
-					
+								
                 	$data['url'] = $request->getPost('url');
                 	$data['active'] = 1;
                 	//$data['class'] =$request->getPost('class');

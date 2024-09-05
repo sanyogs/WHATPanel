@@ -95,36 +95,7 @@ class Sliders extends WhatPanel
         $data['page'] = lang('hd_lang.sliders');
         $data['datatables'] = true;
         $data['sliders'] = $this->get_sliders(); // Use the initialized 
-        // Assuming $id is the slider_id you want to retrieve
-        // $data['slider'] = $this->Slider->get_slider($id);
-		$request = \Config\Services::request();
-        // Log or print the $data array
-        // log_message('info', print_r($data, true));
-
-        // echo view('App\Views\layouts\users');
-		
-		// Pagination Configuration
-		$page = $request->getGet('page') ? $request->getGet('page') : 1;
-
-        $perPage = $request->getGet('recordsPerPage', FILTER_SANITIZE_NUMBER_INT) ? $request->getGet('recordsPerPage', FILTER_SANITIZE_NUMBER_INT) : 10;
-
-		// Search Filter
-		$search = $request->getGet('search');
-		$data['search'] = $search;
-
-        $query = $this->Slider->listItems([], $search, $perPage, $page);
-
-        // Get items for the current page
-		$data['servers'] = array_map(function($item) {
-			return (object) $item;
-		}, $query['items']);
-
-        $data['pager'] = $query['pager'];
-
-		$data['message'] = $query['message'];
-
-		$data['perPage'] = $perPage;
-		
+       		
         return view('modules/sliders/views/index', $data);
 
         // return view('App\Modules\sliders\Views\index', $data);
@@ -353,30 +324,30 @@ class Sliders extends WhatPanel
     }
 
     public function add_slide_post()
-    {
+    {      
         $request = \Config\Services::request();
         helper(['form', 'url']);
         $db = \Config\Database::connect();
         $helper = new custom_name_helper();
+        
+        //if ($request->getPost() && $this->validate(['images' => 'uploaded[images]|max_size[images,1024]'])) {
+           // $validation = \Config\Services::validation();
+           // $validation->setRules([
+               // 'slider' => 'required',
+               // 'title' => 'required',
+               // 'description' => 'required'
+           // ]);
 
-        if ($request->getPost() && $this->validate(['images' => 'uploaded[images]|max_size[images,1024]'])) {
-            $validation = \Config\Services::validation();
-            $validation->setRules([
-                'slider' => 'required',
-                'title' => 'required',
-                'description' => 'required'
-            ]);
-
-            if (!$validation->withRequest($request)->run()) {
+            //if (!$validation->withRequest($request)->run()) {  echo 7689;die;
                 // Validation failed
-                return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-            } else {
+               // return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+            //} else { echo 9;die;
                 $file = $request->getFile('images');
 
                 $newName = $file->getRandomName();
 
                 if ($file->isValid() && !$file->hasMoved()) {
-                    $file->move(ROOTPATH . '../uploads', $newName);
+                    $file->move(ROOTPATH . 'public/uploads', $newName);
                     $data['image'] = $newName;
                 } else {
                     echo 'Error uploading file.';
@@ -385,91 +356,82 @@ class Sliders extends WhatPanel
                 $data['title'] = $request->getPost('title');
                 $data['description'] = $request->getPost('description');
                 $data['slider'] = $request->getPost('slider');
+                $data['btname_one'] = $request->getPost('btname_one');
+                $data['btname_two'] = $request->getPost('btname_two');
+                $data['btn_redirect_one'] = $request->getPost('btn_redirect_one');
+                $data['btn_redirect_two'] = $request->getPost('btn_redirect_two');
 
                 // Insert data into the database
                 $db->table('hd_sliders')->insert($data);
 
                 return redirect()->to($request->getServer('HTTP_REFERER'));
-            }
-        }
+           // }
+        //}
     }
 
-
-
-    function edit_slide($id = null)
+    public function edit_slide($id = null)
     {
-        // echo 1;die;
-        // if (User::is_client()) {
-        //     Applib::go_to('clients', 'error', lang('hd_lang.access_denied'));
-        // }
+        $helper = new custom_name_helper(); // Ensure this path is correct
         $request = \Config\Services::request();
-
         $db = \Config\Database::connect();
-
-        $helper = new custom_name_helper();
-
-        if ($request->getPost()) {
-            Applib::is_demo();
-            $data = array();
-
-            if ($request->getFiles()['images']->getSize() !== 0) {
+        if ($request->getMethod() === 'post') {
+            $data = [];
+            $file = $request->getFile('images');
+            
+            if ($file && $file->isValid() && !$file->hasMoved()) {
+                
                 $uploadConfig = [
-                    'upload_path' => base_url() . 'uploads/',
-                    'allowed_types' => 'gif|png|jpeg|jpg',
-                    'max_size' => $helper->getconfig_item('file_max_size'),
+                    'uploadPath' => ROOTPATH . 'public/uploads',
+                    'allowedTypes' => 'gif|png|jpeg|jpg',
+                    'maxSize' => $helper->getconfig_item('file_max_size'),
                     'overwrite' => false,
                 ];
 
-                $upload = \Config\Services::upload($uploadConfig);
+                $file->move($uploadConfig['uploadPath']); 
 
-                if (!$upload->multiUpload('images')) {
-                    $errors = $upload->getErrors();
-                    $errorMessage = implode('<br>', $errors);
+                if (!$file->isValid()) {
+                    $errors = $file->getErrorString();
+                    print_r($errors);die;
                     $response = [
                         'response_status' => 'error',
                         'message' => lang('hd_lang.operation_failed'),
-                        'form_error' => '<span class="text-danger">' . $errorMessage . '</span><br>',
+                        'form_error' => '<span class="text-danger">' . $errors . '</span><br>',
                     ];
                     session()->setFlashdata($response);
-                    // return redirect()->to('sliders/slider/' . $slider);
-                } else {
-                    $uploadedFiles = $upload->getFiles();
+                    return redirect()->back();
+                }
 
-                    foreach ($uploadedFiles as $file) {
-                        $data['image'] = $file->getName();
-                    }
+                $data['image'] = $file->getName();
+                
+                // Remove old image if it exists
+                $currentImage = $request->getPost('current_image');
+                print_r($currentImage);die;
+                $fullPath = ROOTPATH . 'public/uploads' . $currentImage;
 
-                    $currentImage = $request->getPost('current_image');
-                    $fullPath = base_url() . 'uploads/images/' . $currentImage;
-
-                    if (file_exists($fullPath)) {
-                        unlink($fullPath);
-                    }
+                if (file_exists($fullPath)) {
+                    unlink($fullPath);
                 }
             }
 
             $data['title'] = $request->getPost('title');
             $data['description'] = $request->getPost('description');
+            $slideId = $request->getPost('slide_id');
+            $data['btname_one'] = $request->getPost('btname_one');
+            $data['btname_two'] = $request->getPost('btname_two');
+            $data['btn_redirect_one'] = $request->getPost('btn_redirect_one');
+            $data['btn_redirect_two'] = $request->getPost('btn_redirect_two');
 
-            $entry = array('slide_id' => $request->getPost('slide_id'));
-
-            // App::update('sliders', $entry, $data);
-            $db->table('hd_sliders')->where($entry)->update($data);
+            // Update the slider data in the database
+            $db->table('hd_sliders')->where('slide_id', $slideId)->update($data);
 
             return redirect()->to($request->getServer('HTTP_REFERER'));
 
-            //Applib::go_to($_SERVER['HTTP_REFERER'], 'success', lang('hd_lang.slide_updated'));
         } else {
-
             $data['slide'] = Slider::get_slide($id);
             // echo "<pre>";print_r($data);die;
             return view('modules/sliders/views/modal/edit_slide', $data);
         }
-        // End file add
     }
-
-
-
 
     function delete_slide($id = null)
     {

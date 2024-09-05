@@ -46,12 +46,7 @@ $custom_name_helper = new custom_name_helper();
                     <span>Show</span>
                     <form action="<?php echo base_url('sliders/slider/' . $slider_id); ?>" method="get">
 						<select name="recordsPerPage" onchange="this.form.submit()">
-							<?php $options = [10, 25, 50, 100]; ?>
-							<?php foreach ($options as $option) : ?>
-							<option value="<?= $option ?>" <?= ($option == $perPage) ? 'selected' : '' ?>>
-								<?= $option ?>
-							</option>
-							<?php endforeach; ?>
+							
 						</select>
 					</form>
                     <span>Entries</span>
@@ -119,14 +114,14 @@ $custom_name_helper = new custom_name_helper();
             <div class="slider-table-pagination">
                 <div class="showingEntriesWrap">
 				  <?php
-				  $totalItems = $pager->getTotal(); // Get total number of items from the pager
-				  $currentStart = ($pager->getCurrentPage() - 1) * $perPage + 1; // Calculate the start index of the current page
-				  $currentEnd = min($currentStart + $perPage - 1, $totalItems); // Calculate the end index of the current page
+				  //$totalItems = $pager->getTotal(); // Get total number of items from the pager
+				 // $currentStart = ($pager->getCurrentPage() - 1) * $perPage + 1; // Calculate the start index of the current page
+				  //$currentEnd = min($currentStart + $perPage - 1, $totalItems); // Calculate the end index of the current page
 
-				  $showEntry = "Showing $currentStart to $currentEnd of $totalItems entries";
+				 // $showEntry = "Showing $currentStart to $currentEnd of $totalItems entries";
 
 				  ?>
-				  <p><?= $showEntry; ?></p>
+				  <p><?//= $showEntry; ?></p>
 			  </div>
                 <div class="slider-pagination-wrap">
                     <ul class="slider-pagination">
@@ -147,7 +142,7 @@ $custom_name_helper = new custom_name_helper();
 						  <?php else : ?>
 							<!-- If there are no items, display the message -->
 							<div class="col-12 text-center">
-							  <h1 class="text-center"><?= esc($message) ?></h1>
+							  <h1 class="text-center"><?//= esc($message) ?></h1>
 							</div>
 						  <?php endif ?>
 						</div>

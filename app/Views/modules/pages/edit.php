@@ -7,7 +7,12 @@
  * @license     BSL; see LICENSE.txt
  * @link        https://www.version-next.com
  */
-$content = (array)$data['content'][0];
+if($data['mode'] == 'edit'){
+    $content = (array)$data['content'][0];
+}else{
+    $content = NULL;
+}
+
 //print_r($data['content'][0]);
 //die;
 use function App\Libraries\form_error;?>
@@ -25,9 +30,9 @@ use function App\Libraries\form_error;?>
 
     <!-- Form start -->
     <?php if($data['mode'] == 'add'){
-		echo form_open_multipart(base_url("pages/edit"), ['class'=>'d-flex flex-wrap']);
-	}else {
-		echo form_open_multipart(base_url("pages/edit/{$content['id']}"), ['class'=>'d-flex flex-wrap']);
+		echo form_open(base_url("pages/create"), ['class'=>'d-flex flex-wrap']);
+	}else { 
+		echo form_open(base_url("pages/edit/{$content['id']}"), ['class'=>'d-flex flex-wrap']);
 	}
 	?>
     <div class="col-md-6 col-12 px-5">
@@ -131,137 +136,10 @@ use function App\Libraries\form_error;?>
                                     </label>
                                 </div>
                             </div>
-                            <!-- <div class="row">
-								<label class="col-md-6 common-label"><?//=lang('hd_lang.show_in_menu')?></label>
-								<div class="col-md-6">
-									<select name="menu" class="form-control common-select">
-										<option value="0"><?//=lang('hd_lang.none')?></option>
-										<?//php
-										//foreach ($data['menu_groups'] as $menu) { ?>
-										<option value="<?//= $menu->id ?>"
-											<?//= (isset($content['menu']) && $menu->id == $content['menu']) ? 'selected' : '' ?>>
-											<?//= $menu->title ?>
-										</option>
-										<?//php } ?>
-									</select>
-								</div>
-							</div> -->
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- <div class="commonAccordian">
-				 <div class="accordianBtn">
-				   <h3 class="box-title common-h"><?//=lang('hd_lang.faq_block')?>
-				   </h3>
-				   <span class="accordianArrow">
-				   <svg
-				  xmlns="http://www.w3.org/2000/svg"
-				  width="11"
-				  height="20"
-				  viewBox="0 0 11 20"
-				  fill="none"
-				   >
-				  <path
-				  d="M1.37793 18.1824L9.5972 9.92578L1.37793 1.6692"
-				  stroke="#4A3AFF"
-				  stroke-width="2"
-				  stroke-linecap="round"
-				  stroke-linejoin="round"
-				  />
-				   </svg>
-				   </span>
-				   </div>
-				 <div class="accordianContent">
-				   <div class="accordianText">
-				   <div class="box-body">
-
-
-				  <div class="row pb-3">
-				  <label class="col-md-6 common-label"><?//=lang('hd_lang.display')?></label>
-				  <div class="col-md-6">
-				 <label class="switch">
-				 <input type="hidden" value="off" name="faq" />
-				 <div class="form-check form-switch input-btn-div">
-				 <input type="checkbox" class='form-check-input switch-cus'
-				   <?//php if(isset($content['faq']) && $content['faq'] == 1){ echo "checked=\"checked\""; } ?>
-				   name="faq">
-				   </div>
-				 <span></span>
-				 </label>
-				  </div>
-				  </div>
-
-
-				  <label class="common-label"><?//=lang('hd_lang.category common-label')?></label>
-				  <select name="faq_id" class="form-control common-select">
-				  <option value="0"><?//=lang('hd_lang.none')?></option>
-
-				  </select>
-
-				   </div>
-				   </div>
-				 </div>
-				 </div> -->
-           			<!-- <div class="commonAccordian">
-					<div class="accordianBtn">
-					<h3 class="box-title common-h" style='word-break: break-all;'><?//=lang('hd_lang.knowledgebase')?></h3>
-					<span class="accordianArrow">
-					<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="11"
-					height="20"
-					viewBox="0 0 11 20"
-					fill="none"
-					>
-					<path
-					d="M1.37793 18.1824L9.5972 9.92578L1.37793 1.6692"
-					stroke="#4A3AFF"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					/>
-					</svg>
-					</span>
-					</div>
-					<div class="accordianContent">
-					<div class="accordianText">
-					<div class="box-body">
-
-
-							<div class="row">
-							<label class="col-md-6 common-label"><?=lang('hd_lang.display')?></label>
-							<div class="col-md-6">
-									<label class="switch">
-									<input type="hidden" value="off" name="knowledge" />
-									<div class="form-check form-switch input-btn-div">
-									<input type="checkbox" class='form-check-input switch-cus'
-											<?//php if(isset($content['knowledge']) && $content['knowledge'] == 1){ echo "checked=\"checked\""; } ?>
-											name="knowledge">
-											</div>
-									<span></span>
-									</label>
-							</div>
-							</div>
-
-							<label class="common-label"><?//=lang('hd_lang.category')?></label>
-							<select name="knowledge_id" class="form-control common-select">
-							<option value="0"><?//=lang('hd_lang.none')?></option>
-
-							</select>
-
-							<br />
-
-							<div class="form-group">
-							<label class="common-label">Video URL</label>
-							<?//php echo form_input('video', set_value('video', isset($content['video']) ? $content['video'] : ''), array('class' => 'form-control common-input', 'placeholder' => 'https://www.youtube.com/embed/QJHqLJLQLQ8')); ?>
-							</div>
-
-					</div>
-					</div>
-					</div>
-					</div> -->
 
             <div class="commonAccordian">
                         <div class="accordianBtn">
