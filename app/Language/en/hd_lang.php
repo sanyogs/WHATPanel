@@ -1620,5 +1620,9 @@ return [
 	'skip' => 'Skip and go to cart?',
 	'total_amount' => 'Total Amount',
 	'product_tax' => 'Product Tax',
-	'change_payment_status' => 'Change payment status'
+	'change_payment_status' => 'Change payment status',
+	'button_redirect1' => 'Button Redirect 1',
+	'button_redirect2' => 'Button Redirect 2',
+	'button_name1' => 'Button Name 1',
+	'button_name2' => 'Button Name 2'
 ];
