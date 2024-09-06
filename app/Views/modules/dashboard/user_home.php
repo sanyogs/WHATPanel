@@ -185,7 +185,7 @@ $helper = new custom_name_helper();
 
 												$amount = "";
 												if ($currency != $helper->getconfig_item('default_currency')) {
-													$amount = AppLib::format_currency(Applib::convert_currency($currency, $i['amount'], 'default_currency'));
+													$amount = AppLib::format_currency(Applib::convert_currency($currency, $i['amount']), 'default_currency');
 												}else{
 													$amount = AppLib::format_currency($i['amount'], 'default_currency'); }
 										?>
@@ -236,9 +236,9 @@ $helper = new custom_name_helper();
 										elseif($ticket->status == 'closed') $badge = 'success';
 									?>
 								<div class="ticketCardsWrap">
-									<div class="ticketCardImg">
-										<img src="<?php echo User::avatar_url($ticket->reporter);?>" class="" height='16' width='16' >
-									</div>
+									<!-- <div class="ticketCardImg">
+										<img src="<?//php echo User::avatar_url($ticket->reporter);?>" class="" height='16' width='16' >
+									</div> -->
 									<a href="<?= base_url() ?>tickets/view/<?=$ticket->id;?>">
 									<div class="ticketDetailsWrap">
 										<h5><?php
@@ -507,15 +507,28 @@ $helper = new custom_name_helper();
 					<div class="pieDiv">
 						<canvas id="dashPieChart"></canvas>
 					</div>
+						<?php
+				$total_receipts = $sums['paid'];
+				$model = new Invoice();
+				$invoices_cost = $model->invoice_amount();
+				$outstanding = $sums['due'];
+				if ($outstanding < 0) $outstanding = 0;
+				$perc_paid = $perc_outstanding = 0;
 
+				if ($invoices_cost > 0) {
+					$perc_paid = ($total_receipts / $invoices_cost) * 100;
+					$perc_paid = ($perc_paid > 100) ? '100' : round($perc_paid, 1);
+					$perc_outstanding = round(100 - $perc_paid, 1);
+				}
+				?>
 					<div class="pieChartLegends">
 						<div class="pieChartPaidDiv">
 							<span></span>
-							<h5>Paid - $ 1,000.00</h5>
+					<h5><?= lang('hd_lang.paid') ?> - <?php echo Applib::format_currency($total_receipts,'default_currency'); ?></h5>
 						</div>
 						<div class="pieChartOutstandingDiv">
 							<span></span>
-							<h5>Outstanding- $ 38.00</h5>
+			<h5><?= lang('hd_lang.outstanding') ?> - <?php echo Applib::format_currency(Invoice::outstanding(), 'default_currency'); ?></h5>
 						</div>
 					</div>
 				</div>
