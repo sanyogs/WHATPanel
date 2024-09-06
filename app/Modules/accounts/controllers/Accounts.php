@@ -1052,76 +1052,87 @@ class Accounts extends WhatPanel{
 
 	
     public function upload()
-    {
-        $request = \Config\Services::request();
-        $db = \Config\Database::connect();
+	{
+		$request = \Config\Services::request();
+		$file = $request->getFile('import');
+	
+		if ($file !== null && $file->isValid() && !$file->hasMoved()) {
+			$fileName = $file->getName();
+			$fileInfo = pathinfo($fileName);
+			$fileExtension = strtolower($fileInfo['extension']);
 
-        if ($request->getMethod() === 'post' && $request->getFile('import')) {
-            $file = $request->getFile('import');
-
-            $validTypes = ['Xlsx', 'Xls', 'Csv'];
-            $valid = false;
-
-            foreach ($validTypes as $type) {
-                $reader = IOFactory::createReader($type);
-                if ($reader->canRead($file)) {
-                    $valid = true;
-                    break;
-                }
-            }
-
-            if (!$valid) {
-                session()->setFlashdata('response_status', 'warning');
-                session()->setFlashdata('message', lang('hd_lang.not_csv'));
+			$uploadDir = FCPATH . 'uploads/images/';
+			if (!is_dir($uploadDir)) {
+				mkdir($uploadDir, 0777, true);
+			}
+			
+			$filePath = $uploadDir . $fileName;
+			if (!$file->move($uploadDir, $fileName)) {
+				session()->setFlashdata('response_status', 'warning');
+				session()->setFlashdata('message', "Error uploading file: " . $file->getErrorString());
 				$data['page'] = lang('hd_lang.accounts');
-                return view('modules/accounts/upload', $data);
-            }
+				return view('modules/accounts/upload', $data);
+			}
 
-            try {
-                $spreadsheet = IOFactory::load($file);
-                $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
-                $accounts = [];
-
-                for ($x = 3; $x <= count($sheetData); $x++) {
-                    // Check if the domain exists in the database
-                    if ($db->table('hd_orders')->where('domain', $sheetData[$x]["G"])
-                        ->where('username', $sheetData[$x]["P"])
-                        ->where('client_id', $sheetData[$x]["B"])
-                        ->where('type', 'hosting')->get()->getNumRows() == 0
-                    ) {
-                        $domain = [
-                            'id' => $sheetData[$x]["A"],
-                            'user_id' => $sheetData[$x]["B"],
-                            'domain' => $sheetData[$x]["G"],
-                            'first_payment' => $sheetData[$x]["J"],
-                            'recurring_amount' => $sheetData[$x]["K"],
-                            'renewal' => $sheetData[$x]["L"],
-                            'due_date' => $sheetData[$x]["M"],
-                            'username' => $sheetData[$x]["P"],
-                            'password' => $sheetData[$x]["Q"],
-                            'status' => $sheetData[$x]["O"],
-                            'notes' => $sheetData[$x]["R"],
-                            'reason' => $sheetData[$x]["T"]
-                        ];
-
-                        $accounts[] = (object) $domain;
-                    }
-                }
-
-                session()->set('import_accounts', $accounts);
-            } catch (\Exception $e) {
-                session()->setFlashdata('response_status', 'warning');
-                session()->setFlashdata('message', "Error loading file:" . $e->getMessage());
+			if ($fileExtension === 'csv') { 
+				if (($handle = fopen($filePath, 'r')) !== FALSE) {
+					$fileData = array();
+					while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+						$fileData[] = $data;
+					}
+					fclose($handle);
+				} else { 
+					session()->setFlashdata('response_status', 'warning');
+					session()->setFlashdata('message', "Error loading file: " . $filePath);
+					$data['page'] = lang('hd_lang.accounts');
+					return view('modules/accounts/upload', $data);
+				}
+			} elseif ($fileExtension === 'xlsx' || $fileExtension === 'xls') { echo 3;die;
+				$this->load->library('PHPExcel');
+				$objPHPExcel = PHPExcel_IOFactory::load($filePath);
+				$fileData = array();
+				foreach ($objPHPExcel->getActiveSheet()->getRowIterator() as $row) { 
+					$rowData = array();
+					foreach ($row->getCellIterator() as $cell) {
+						$rowData[] = $cell->getValue();
+					}
+					$fileData[] = $rowData;
+				}
+			} else { 
+				session()->setFlashdata('response_status', 'warning');
+				session()->setFlashdata('message', "Invalid file type. Only CSV and Excel files are allowed.");
 				$data['page'] = lang('hd_lang.accounts');
-                return view('modules/accounts/upload', $data);
-            }
+				return view('modules/accounts/upload', $data);
+			}
 
-            return view('accounts/import');
-        } else {
-            $data['page'] = lang('hd_lang.accounts');
-            return view('modules/accounts/upload', $data);
-        }
-    }
+			$data['fileData'] = $fileData;
+			$accounts = array();
+		
+			foreach ($fileData as $x => $sheetData) {
+				$domain = array();
+				$domain['id'] = $sheetData[0];
+				$domain['user_id'] = $sheetData[1];
+				$domain['domain'] = $sheetData[7];
+				$domain['first_payment'] = $sheetData[10];                        
+				$domain['recurring_amount'] = $sheetData[11];                        
+				$domain['renewal'] = $sheetData[12];
+				$domain['due_date'] = $sheetData[13];
+				$domain['username'] = $sheetData[18]; 
+				$domain['password'] = $sheetData[19];
+				$domain['status'] = $sheetData[17];
+				$domain['notes'] = $sheetData[20];
+				$domain['reason'] = $sheetData[22];
+				$accounts[] = (object) $domain;
+			}
+			session()->set('import_accounts', $accounts);
+			echo view('modules/accounts/import', $data);
+		} else { 
+			session()->setFlashdata('response_status', 'warning');
+			session()->setFlashdata('message', "No file was uploaded or the file is invalid.");
+			$data['page'] = lang('hd_lang.accounts');
+			return view('modules/accounts/upload', $data);
+		}
+	}
  
  
 

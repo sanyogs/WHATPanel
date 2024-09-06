@@ -1,10 +1,13 @@
+<?= $this->extend('layouts/users') ?>
+
+<?= $this->section('content') ?>
 <div class="box">
     <div class="box-body">
         <div class="table-responsive">
             <?php
-        use App\Models\Item;
-        $attributes = array('class' => 'bs-example form-horizontal');
-        echo form_open(base_url().'accounts/import_accounts', $attributes); ?>
+            use App\Models\Item;
+            $attributes = array('class' => 'bs-example form-horizontal');
+            echo form_open(base_url().'accounts/import_accounts', $attributes); ?>
 
             <table id="table-rates" class="table table-striped b-t">
                 <thead>
@@ -21,40 +24,41 @@
                 </thead>
                 <tbody>
                     <?php
-            
-            $data = $this->session->userdata('import_accounts') ? $this->session->userdata('import_accounts') : array();      
-            $services = Item::get_hosting();        
-                          
-            foreach ($data as $acc) { ?>
-                    <tr>
-                        <td><?=$acc->domain?></td>
-                        <td><?=$acc->username?></td>
-                        <td><?=$acc->renewal?></td>
-                        <td><select name="package[<?=$acc->id?>]">
-                                <option value="0"><?=lang('hd_lang.select')?></option>
-                                <?php 
-                    foreach($services as $service)
-                    { ?>
-                                <option value="<?php echo $service->item_id; ?>" <?php $interval = strtolower(str_replace("_", "", $acc->renewal));
-                        if(isset($service->$interval))
-                        {
-                            if($acc->recurring_amount == intval($service->$interval))
-                            {
-                                echo "selected";
-                            } 
-                        }                        
-                        
-                        ?>><?php echo $service->item_name; ?></option>
-                                <?php  } ?>
-                            </select>
-                        </td>
-                        <td><?=$acc->due_date?></td>
-                        <td><?=$acc->status?></td>
-                        <td><?=$acc->notes?></td>
-                        <td><input type="checkbox" checked name="<?=$acc->id?>"></td>
-                    </tr>
-                    <?php }  ?>
-
+                    $data = session()->get('import_accounts') ? session()->get('import_accounts') : array();      
+                    $services = Item::get_hosting();        
+                    
+                    foreach ($data as $acc) {
+                        if (!empty($acc->domain) && !empty($acc->username)) { ?>
+                            <tr>
+                                <td><?=$acc->domain?></td>
+                                <td><?=$acc->username?></td>
+                                <td><?=$acc->renewal?></td>
+                                <td>
+                                    <select name="package[<?=$acc->id?>]">
+                                        <option value="0"><?=lang('hd_lang.select')?></option>
+                                        <?php 
+                                        foreach($services as $service) { ?>
+                                            <option value="<?php echo $service->item_id; ?>" 
+                                                <?php 
+                                                $interval = strtolower(str_replace("_", "", $acc->renewal));
+                                                if(isset($service->$interval)) {
+                                                    if($acc->recurring_amount == intval($service->$interval)) {
+                                                        echo "selected";
+                                                    }
+                                                }
+                                                ?>>
+                                                <?php echo $service->item_name; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
+                                <td><?=$acc->due_date?></td>
+                                <td><?=$acc->status?></td>
+                                <td><?=$acc->notes?></td>
+                                <td><input type="checkbox" checked name="<?=$acc->id?>"></td>
+                            </tr>
+                        <?php } 
+                    } ?>
                 </tbody>
                 <tfoot>
                     <tr>
@@ -69,11 +73,11 @@
                     </tr>
                 </tfoot>
             </table>
-            </form>
+            <?php echo form_close(); ?>
         </div>
     </div>
 </div>
-
+<?= $this->endSection() ?>
 
 <script>
 $(document).ready(function() {
@@ -82,6 +86,6 @@ $(document).ready(function() {
         $('input[type="checkbox"]').each(function() {
             this.checked = checked;
         });
-    })
+    });
 });
 </script>

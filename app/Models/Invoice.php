@@ -504,6 +504,33 @@ class Invoice extends Model
         }
     }
 
+    public function invoice_amount()
+	{
+		$custom_name_helper = new custom_name_helper();
+
+		$invoices = self::get_invoices(null, null, true);
+		$total_cost = 0; // Initialize total cost variable
+
+		foreach ($invoices as $invoice) {
+			$tax = self::get_invoice_tax($invoice->inv_id, null, true);
+			$discount = self::get_invoice_discount($invoice->inv_id);
+			$invoice_cost = self::get_invoice_subtotal($invoice->inv_id);
+
+			$tempcost = ($invoice_cost + $tax) - $discount;
+
+			// Convert currency if needed
+			if ($invoice->currency != $custom_name_helper->getconfig_item('default_currency')) { 
+				$tempcost = Applib::convert_currency($invoice->currency, $tempcost);
+			}
+
+			// Add to total cost
+			$total_cost += $tempcost;
+		}
+
+		// Round the total cost
+		return round($total_cost, $custom_name_helper->getconfig_item('currency_decimals'));
+	}
+
     public static function outstanding()
     {
         $custom_name_helper = new custom_name_helper();
