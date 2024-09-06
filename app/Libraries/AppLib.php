@@ -191,7 +191,6 @@ class AppLib
 
         $session->setFlashdata('response_status', $response);
         $session->setFlashdata('message', $message);
-        // echo 3; die;
         return redirect()->to($url);
     }
 

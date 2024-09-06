@@ -47,20 +47,22 @@ margin-right: 10px; /* Space between radio button and label */
 <section id="bannerSection">
   <div class="bannerWrapper">
     <div class="col-xl-5 col-lg-12 col-md-12">
-      <div class="bannerContentWrapper">
-        <h1>All what you need is a featured domain name to start.</h1>
-        <p>
-          The perfect domain lets people know at a glance why you're
-          online and why you're awesome.
-        </p>
-      </div>
-      <div class="banBrnWrap">
-        <a href="" target="_blank" class="btn">Register Now</a>
-        <a href="" target="_blank" class="anchLink">Domain Transfer.?
-          <span class="rightArrowWrap"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" viewBox="0 0 24 16" fill="none">
-              <path d="M1.5 7C0.947715 7 0.5 7.44772 0.5 8C0.5 8.55228 0.947715 9 1.5 9L1.5 7ZM23.2071 8.7071C23.5976 8.31658 23.5976 7.68342 23.2071 7.29289L16.8431 0.928931C16.4526 0.538407 15.8195 0.538407 15.4289 0.928931C15.0384 1.31946 15.0384 1.95262 15.4289 2.34314L21.0858 8L15.4289 13.6569C15.0384 14.0474 15.0384 14.6805 15.4289 15.0711C15.8195 15.4616 16.4526 15.4616 16.8431 15.0711L23.2071 8.7071ZM1.5 9L22.5 9L22.5 7L1.5 7L1.5 9Z" fill="white" />
-            </svg></span></a>
-      </div>
+      <?//php foreach($slider as $value): ?>
+        <div class="bannerContentWrapper">
+          <h1><?= $slider->title ?></h1>
+          <p>
+            <?= $slider->description ?>
+          </p>
+        </div>
+        <div class="banBrnWrap">
+          
+            <a href="<?=base_url()?><?= $slider->btn_redirect_one ?>" target="_blank" class="btn"><?= $slider->btname_one ?></a>
+            <a href="<?=base_url()?><?= $slider->btn_redirect_two ?>" target="_blank" class="anchLink"><?= $slider->btname_two ?>
+              <span class="rightArrowWrap"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="16" viewBox="0 0 24 16" fill="none">
+                  <path d="M1.5 7C0.947715 7 0.5 7.44772 0.5 8C0.5 8.55228 0.947715 9 1.5 9L1.5 7ZM23.2071 8.7071C23.5976 8.31658 23.5976 7.68342 23.2071 7.29289L16.8431 0.928931C16.4526 0.538407 15.8195 0.538407 15.4289 0.928931C15.0384 1.31946 15.0384 1.95262 15.4289 2.34314L21.0858 8L15.4289 13.6569C15.0384 14.0474 15.0384 14.6805 15.4289 15.0711C15.8195 15.4616 16.4526 15.4616 16.8431 15.0711L23.2071 8.7071ZM1.5 9L22.5 9L22.5 7L1.5 7L1.5 9Z" fill="white" />
+                </svg></span></a>
+        </div>
+      <?//php endforeach; ?>
     </div>
   </div>
 </section>
