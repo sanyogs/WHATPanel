@@ -30,8 +30,7 @@
 				<div class="form-group">
 				<label class="col-lg-4 control-label"><?=lang('hd_lang.email')?></label>
 				<div class="col-lg-8">
-
-                          <input class="form-control" id='email' type="email" value="<?=set_value('email')?>" placeholder="me@domain.com" name="email" required>
+				<input class="form-control" id='email' type="email" value="<?=set_value('email')?>" placeholder="me@domain.com" name="email" required>
 
 				</div>
 				</div>

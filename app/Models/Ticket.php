@@ -186,7 +186,7 @@ class Ticket extends Model
         // Connect to the database  
         $db = \Config\Database::connect();
 
-        return $db->table('ticketreplies')
+        return $db->table('hd_ticketreplies')
             ->where('ticketid', $id)
             ->orderBy('id', 'asc')
             ->get()
