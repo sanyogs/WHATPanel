@@ -383,7 +383,7 @@ class Tickets extends WhatPanel
 
 
 	function reply()
-	{	
+	{
 		$cutom = new custom_name_helper();
 		$request = \Config\Services::request();
 		if ($request->getPost()) {
@@ -391,7 +391,6 @@ class Tickets extends WhatPanel
 
 			$validation = \Config\Services::validation();
 
-			// Set validation rules
 			$validation->setRules([
 				'reply' => 'required'
 			]);
@@ -409,7 +408,7 @@ class Tickets extends WhatPanel
 				$insert = array(
 					'ticketid' => $_POST['ticketid'],
 					'body' => $request->getPost('reply'),
-					'attachment' => $attachment,
+					'attachment' => json_encode($attachment),
 					'replierid' => User::get_id(),
 				);
 
@@ -857,42 +856,34 @@ class Tickets extends WhatPanel
 		$response = \Config\Services::response();
 
 		$validation = \Config\Services::validation();
+		
+		$input = $validation->setRules([
+        'ticketfiles.*' => 'uploaded[ticketfiles.*]|max_size[ticketfiles.*,1024]|ext_in[ticketfiles.*,jpg,jpeg,png,webp]',
+    	]);
 
-		helper(['form', 'url']);
-
-		// Load the Upload library
-		// Validation
-		$input = $this->validate([
-			'ticketfiles' => 'uploaded[file]|max_size[file,1024]|ext_in[file,jpg,jpeg,png,webp],'
-	   ]);
-
-	   if (!$input) { // Not valid
-			$data['validation'] = $this->validator; 
-			//return view('users',$data); 
+	   if (!$input) {
+		   $data['validation'] = $this->validator; 
+			return ['errors' => $validation->getErrors()];
 	   } else {
-			if($file = $this->request->getFile('ticketfiles')) {
-				foreach ($uploadedFiles as $file) {
-					if ($file->isValid() && ! $file->hasMoved()) {
-						// Get file name and extension
-						$name = $file->getName();
-						$ext = $file->getClientExtension();
+		   $uploadedFiles = $request->getFiles();
+		   $uploadedPaths = [];
 
-						// Get random file name
-						$newName = $file->getRandomName();
+		   foreach ($uploadedFiles['ticketfiles'] as $file) {
+			   if ($file->isValid() && !$file->hasMoved()) {
 
-						// Store file in uploads/ folder
-						$file->move(base_url() . 'uploads/files/', $newName);
+				   $newName = $file->getClientName();
 
-						// File path to display preview
-						$filepath = base_url() . "uploads/files/".$newName;
-					}
-				}
-			}
+				   $uploadPath = FCPATH . 'attachments/';
+				
+				   $file->move($uploadPath, $newName);
 
-			return $filepath;
-		}
+				   $uploadedPaths[] = $uploadPath . $newName;
+			   }
+		   }
+
+		   return $uploadedPaths;
+	   }
 	}
-
 
 
 	function _admin_tickets($archive = FALSE, $filter_by = NULL)

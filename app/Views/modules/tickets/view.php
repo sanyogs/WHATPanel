@@ -103,7 +103,7 @@ $db = \Config\Database::connect();
 						<div class="form-group modal-input align-items-center   my-4">
 							<label class="common-label col-lg-5 col-sm-3 col-12"><?= lang('hd_lang.reporter') ?> <span class="text-danger">*</span></label>
 							<div class="m-b col-lg-7 col-sm-9 col-12">
-							<select class="select2-option form-control common-select" name="reporter" required="" disabled>
+								<select class="select2-option form-control common-select" name="reporter" required="" disabled>
 									<?php foreach (User::all_users() as $user) : ?>
 										<option value="<?= $user->id ?>" <?= ($info->reporter == $user->id ? ' selected="selected"' : '') ?>>
 											<?php echo User::displayName($user->id); ?></option>
@@ -147,7 +147,7 @@ $db = \Config\Database::connect();
 						</div>
 
 						<button type="submit" class="btn btn-sm btn-dark common-button"><?= lang('hd_lang.save_changes') ?></button>
-						</form>
+						<?php echo form_close(); ?>
 
 					<?php } else { ?>
 
@@ -252,7 +252,6 @@ $db = \Config\Database::connect();
 					}
 				</style>
 
-
 				<div class="col-lg-8 col-12 ticket_body my-4">
 					<strong class="my-4 common-h"><?= $info->subject ?></strong>
 					<div class="line line-dashed line-lg pull-in my-4"></div>
@@ -265,10 +264,10 @@ $db = \Config\Database::connect();
 						if (json_decode($info->attachment)) {
 							$files = json_decode($info->attachment);
 							foreach ($files as $f) { ?>
-								<a class="label bg-info" href="<?= base_url() ?>resource/attachments/<?= $f ?>" target="_blank"><?= $f ?></a><br>
+								<a class="label bg-info" href="<?= base_url() ?>public/attachments/<?= $f ?>" target="_blank"><?= $f ?></a><br>
 							<?php }
 						} else { ?>
-							<a class="label bg-info" href="<?= base_url() ?>resource/attachments/<?= $info->attachment ?>" target="_blank"><?= $info->attachment ?></a><br>
+							<a class="label bg-info" href="<?= base_url() ?>public/attachments/<?= $info->attachment ?>" target="_blank"><?= $info->attachment ?></a><br>
 						<?php } ?>
 
 					<?php } ?>
@@ -278,7 +277,7 @@ $db = \Config\Database::connect();
 						<!-- ticket replies -->
 						<div class="hs-table-overflow table-overflow" style='top: unset !important;'>
 							<table class='common-table tickets-reply-table'>
-								<?php
+								<?php 
 								if (count(Ticket::view_replies($id)) > 0) {
 									foreach (Ticket::view_replies($id) as $key => $r) {
 										$role = User::get_role($r->replierid);
@@ -297,16 +296,18 @@ $db = \Config\Database::connect();
 
 									</td>
 									<td>
-										<?php if ($r->attachment != NULL) {
+										<?php 
+									if ($r->attachment != NULL) {
 											echo '<div class="ticket-attachment pull-in"></div>';
 											$replyfiles = '';
 											if (json_decode($r->attachment)) {
 												$replyfiles = json_decode($r->attachment);
-												foreach ($replyfiles as $rf) { ?>
-													<a class="label bg-info" href="<?= base_url() ?>resource/attachments/<?= $rf ?>" target="_blank"><?= $rf ?></a><br>
+												foreach ($replyfiles as $rf) {  
+									$uploadPath = str_replace('/var/www/vhosts/demo.whatpanel.com/httpdocs', '', $rf);?>
+							<a class="label bg-info" href="<?= $uploadPath ?>" target="_blank"><?= $uploadPath ?></a><br>
 												<?php }
-											} else { ?>
-												<a href="<?= base_url() ?>resource/attachments/<?= $r->attachment ?>" target="_blank"><?= $r->attachment ?></a><br>
+											} else { $uploadPath = str_replace('/var/www/vhosts/demo.whatpanel.com/httpdocs', '', $r->attachment); ?>
+												<a href="<?= $uploadPath ?>" target="_blank"><?= $uploadPath ?></a><br>
 											<?php } ?>
 
 										<?php } ?>
@@ -315,17 +316,17 @@ $db = \Config\Database::connect();
 										<span class="text-muted m-l-sm pull-right common-span">
 											<i class="fa fa-clock-o"></i>
 
-											<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M:%S", strtotime($r->time)); ?>
+											<?php echo strftime($custom->getconfig_item('date_format') . " %H:%M:%S"); ?>
 											<?php
 											if ($custom->getconfig_item('show_time_ago') == 'TRUE') {
-											
+												
 											}
 											?>
 
 										</span>
 									</td>
 								</tr>
-									<?php }
+									<?php } 
 								} else { ?>
 
 									<tr id="comment-id-1">
@@ -368,7 +369,7 @@ $db = \Config\Database::connect();
 										<ul class="nav nav-pills nav-sm">
 										</ul>
 									</footer>
-									</form>
+									<?php echo form_close(); ?> 
 								</section>
 							</section>
 						</article>
