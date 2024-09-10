@@ -23,7 +23,7 @@
 				<label class="col-lg-4 control-label"><?=lang('hd_lang.username')?> <span class="text-danger">*</span></label>
 				<div class="col-lg-8">
 
-                          <input class="form-control" id='username' type="text" value="<?=set_value('username')?>" placeholder="johndoe" name="username" required>
+                <input class="form-control" id='username' type="text" value="<?=set_value('username')?>" placeholder="johndoe" name="username" required>
 
 				</div>
 				</div>
@@ -49,7 +49,7 @@
 				<div class="form-group">
 				<label class="col-lg-4 control-label"><?=lang('hd_lang.phone')?> </label>
 				<div class="col-lg-8">
-					<input type="text" class="form-control" value="<?=set_value('phone')?>" name="phone" placeholder="+52 782 983 434">
+					<input type="tel" class="form-control" value="<?=set_value('phone')?>" name="phone" placeholder="+52 782 983 434">
 				</div>
 
 				</div>

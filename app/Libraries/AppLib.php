@@ -133,13 +133,13 @@ class AppLib
 
     static function get_table_field($table, $where_criteria = array(), $table_field)
     {	
-		$db = \Config\Database::connect();
-        $result = self::$db->select($table_field)->where($where_criteria)->get($table)->getRow();
-        if ($result) {
-            return $result->$table_field;
-        }
+		$db = \Config\Database::connect(); // Assign the result to a variable
+		$result = $db->table($table)->select($table_field)->where($where_criteria)->get()->getRow();
+		if ($result) {
+			return $result->$table_field;
+		}
 
-        return FALSE;
+		return FALSE;
     }
 
 

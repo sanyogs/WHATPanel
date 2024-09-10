@@ -558,6 +558,7 @@ $routes->group('account', ['filter' => 'sessionsCheck', 'namespace' => 'App\Modu
     $subroutes->post('ban', 'Account::ban');
     $subroutes->get('auth/(:any)', 'Account::auth/$1', ['as' => 'account.auth']);
     $subroutes->post('auth', 'Account::auth');
+    $subroutes->get('permissions/(:any)', 'Account::permissions/$1');
 	
 });
 
@@ -579,6 +580,7 @@ $routes->group('reports', ['filter' => 'sessionsCheck', 'namespace' => 'App\Modu
 $routes->group('users', ['filter' => 'sessionsCheck','namespace' => 'App\Modules\Users\Controllers'], function ($subroutes) {
     $subroutes->get('account/delete/(:any)', 'Account::delete/$1');
 	$subroutes->post('account/delete/(:any)', 'Account::delete/$1');
+    $subroutes->post('account/permissions', 'Account::permissions');
 });
 
 $routes->group('cart', ['filter' => 'sessionsCheck', 'namespace' => 'App\Modules\cart\controllers'], function ($subroutes) {

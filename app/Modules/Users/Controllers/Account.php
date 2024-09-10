@@ -61,30 +61,33 @@ class Account extends WhatPanel
 	
 
 	function permissions()
-	{
+	{	
+		$request = \Config\Services::request();
+		$db = \Config\Database::connect();
+		if ($request->getPost()) {
+			 $postData = $request->getPost();
+			 $permissions = json_encode($postData);
+			 $userId = $postData['user_id'];
+			
+			 //$permissions = json_encode($request->getPost());
+			 $data = ['allowed_modules' => $permissions];
+			 $db->table('hd_account_details')->where('user_id', $userId)->update($data);
 
-		if ($_POST) {
-			 $permissions = json_encode($_POST);
-			 $data = array('allowed_modules' => $permissions);
-			 App::update('account_details',array('user_id' => $_POST['user_id']),$data);
-
-			 $this->session->set_flashdata('response_status', 'success');
-			 $this->session->set_flashdata('message', lang('hd_lang.settings_updated_successfully'));
-			redirect(base_url().'users/account');
-
+			  session()->setFlashdata('response_status', 'success');
+			  session()->setFlashdata('message', lang('hd_lang.settings_updated_successfully'));
+	
+			  return redirect()->to('account');
 		}else{
-			$staff_id = $this->uri->segment(4);
+			$staff_id = $this->request->uri->getSegment(3);
 
-			if (User::login_info($staff_id)->role_id != '3') {
-				$this->session->set_flashdata('response_status', 'error');
-			 	$this->session->set_flashdata('message', lang('hd_lang.operation_failed'));
-			 	redirect($_SERVER['HTTP_REFERRER']);
+			if (User::login_info($staff_id)->role_id != '3') { 
+				session()->setFlashdata('response_status', 'error');
+				session()->setFlashdata('message', lang('hd_lang.operation_failed'));
+				return redirect()->back();
 			}
 			$data['user_id'] = $staff_id;
-			$this->load->view('modal/edit_permissions',isset($data) ? $data : NULL);
+			echo view('modules/Users/Modal/edit_permissions', $data);
 		}
-
-
 	}
 
 
