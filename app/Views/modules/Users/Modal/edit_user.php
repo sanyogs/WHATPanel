@@ -80,8 +80,8 @@ $custom = new custom_name_helper();
                     <div class="inputDiv">
                         <select name="department[]" class="select2-option w_200 common-select mb-3" multiple="multiple">
 
-                            <?php
-                        $departments = $this->db->get('departments')->result();
+                            <?php $db = \Config\Database::connect();
+                        $departments = $db->table('hd_departments')->get()->getResult();
                         $dep = json_decode($info->department,TRUE);
                         if (!empty($departments)){
                             foreach ($departments as $d){ ?>
@@ -129,10 +129,6 @@ $custom = new custom_name_helper();
                     </div>
                 </div>
 
-            
-
-            
-
                 <div class="form-group col-sm-6">
                     <label class="common-label control-label"><?=lang('hd_lang.language')?></label>
                     <div class="inputDiv">
@@ -162,11 +158,7 @@ $custom = new custom_name_helper();
                         </select>
                     </div>
                 </div>
-
                 </div>
-
-            
-
         </div>
         <div class="modal-footer justify-content-center"> <a href="#" class="btn common-button text-dark btn-default"
                 data-dismiss="modal"><?=lang('hd_lang.close')?></a>

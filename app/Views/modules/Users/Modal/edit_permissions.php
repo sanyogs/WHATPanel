@@ -1,24 +1,37 @@
+<?php 
+use App\Libraries\AppLib;
+use App\Helpers\custom_name_helper;
+
+$helper = new custom_name_helper();
+$db = \Config\Database::connect();
+?>
+<style>
+	.custom{
+		min-height: 20px;
+		padding-left: 20px;
+		margin-bottom: 0;
+		font-weight: 400;
+		cursor: pointer;
+	}
+</style>
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header"> <button type="button" class="close" data-dismiss="modal">&times;</button> 
     <h4 class="modal-title"><?=lang('hd_lang.permission_settings')?> <?php
                 if (isset($user_id)) {
-                    echo ' for '.ucfirst(Applib::get_table_field('users',array('id'=>$user_id),'username'));
+                    echo ' for '.ucfirst(AppLib::get_table_field('hd_users',array('id'=>$user_id),'username'));
                 }
                 ?></h4>
     </div>
     <div class="modal-body">
 
-
-    <?php
-    $attributes = array('class' => 'bs-example form-horizontal');
-    echo form_open('users/account/permissions', $attributes); ?>
+		<?php echo form_open('users/account/permissions', ['class' => 'bs-example form-horizontal', 'style' => 'margin-left: 25%;']); ?>
         <input type="hidden" name="settings" value="permissions">
         <input type="hidden" name="user_id" value="<?=$user_id?>">
 
         <!-- checkbox -->
         <?php
-        $permission = $this -> db -> where(array('status'=>'active')) -> get('permissions') -> result();
+        $permission = $db->table('hd_permissions')->where(array('status'=>'active'))->get()->getResult();
 
         $current_json_permissions = Applib::get_table_field(Applib::$profile_table,array('user_id'=>$user_id),'allowed_modules');
 
@@ -28,28 +41,24 @@
         $current_permissions = json_decode($current_json_permissions, true);
         foreach ($permission as $key => $p) { ?>
             <div class="checkbox">
-                <label class="checkbox-custom">
+                <label class="custom">
                     <input type="hidden" value="off" name="<?=$p->name?>" />
                     <input name="<?=$p->name?>" <?php
                     if ( array_key_exists($p->name, $current_permissions) && $current_permissions[$p->name] == 'on') {
                         echo "checked=\"checked\"";
                     }
                     ?>  type="checkbox">
-                    <?=lang($p->name)?>
+                    <?=lang('hd_lang.' . $p->name)?>
                 </label>
             </div>
             <?php } ?>
 
         <div class="modal-footer"> 
     <a href="#" class="btn btn-default" data-dismiss="modal"><?=lang('hd_lang.close')?></a> 
-    <button type="submit" class="btn btn-<?=config_item('theme_color');?>"><?=lang('hd_lang.save_changes')?></button>
-    </form>
-
+    <button type="submit" class="btn btn-<?=$helper->getconfig_item('theme_color');?>"><?=lang('hd_lang.save_changes')?></button>
+    <?php echo form_close(); ?>
         </div>
-
-    
     </div>
-
   </div>
   <!-- /.modal-content -->
 </div>

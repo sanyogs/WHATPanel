@@ -98,7 +98,7 @@ use App\ThirdParty\MX\Modules;
             <div class="scrollable wrapper">
                 <h4 class="m-t-none"><?=lang('hd_lang.new_client')?></h4>
                 <?php
-          echo form_open(base_url().'auth/register_user'); ?>
+                echo form_open(base_url().'auth/register_user'); ?>
                 <?php echo $this->session->flashdata('form_errors'); ?>
                 <input type="hidden" name="r_url" value="<?=base_url()?>contacts">
                 <div class="form-group">

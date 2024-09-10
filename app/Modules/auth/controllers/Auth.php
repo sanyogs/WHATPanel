@@ -1002,7 +1002,6 @@ class Auth extends WhatPanel
 
     function _email_change_email($email, $data)
     {	
-		print_r($data);die;
 		$app_helper = new app_helper();
 		$custom = new custom_name_helper();
         $message = App::email_template('change_email', 'template_body');

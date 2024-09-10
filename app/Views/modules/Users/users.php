@@ -52,7 +52,7 @@ $custom = new custom_name_helper();
                         </div>
                         <div class="box-body">
                             <?php
-											echo form_open(base_url('auth/register_user'), ['id' => 'registerForm']); ?>
+							echo form_open(base_url('auth/register_user'), ['id' => 'registerForm']); ?>
                             <p class="text-danger"><?php $session = \Config\Services::session(); 
 											//echo session()->getFlashdata('form_errors'); ?></p>
                             <input type="hidden" name="r_url" value="<?=base_url('account')?>">
@@ -92,10 +92,14 @@ $custom = new custom_name_helper();
                                     <div class="form-group">
                                         <label class="common-label"><?=lang('hd_lang.email')?> <span
                                                 class="text-danger">*</span></label>
-                                        <input type="email"
-                                            placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_email')?>"
-                                            name="email" value="<?=set_value('email')?>"
-                                            class="input-sm form-control common-input" required />
+                                          <input type="email"
+											 placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_email')?>"
+											 name="email"
+											 value="<?=set_value('email')?>"
+											 class="input-sm form-control common-input"
+											 required
+											 pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+											 title="Please enter a valid email address" />
                                     </div>
 
                                     <div class="form-group">
@@ -106,12 +110,9 @@ $custom = new custom_name_helper();
                                             </optgroup>
                                             <optgroup label="<?=lang('hd_lang.other_companies')?>">
                                                 <?php 
-																
-																$clients = Client::get_all_clients();
-
-																if (!empty($clients)) {
-																
-																foreach ($clients as $company){ ?>
+													$clients = Client::get_all_clients();
+														if (!empty($clients)) {
+													foreach ($clients as $company){ ?>
                                                 <option value="<?=$company->co_id?>"><?=$company->company_name?>
                                                 </option>
                                                 <?php } } ?>
@@ -120,7 +121,7 @@ $custom = new custom_name_helper();
                                     </div>
                                     <div class="form-group">
                                         <label class="common-label"><?=lang('hd_lang.phone')?> </label>
-                                        <input type="text" class="input-sm form-control common-input"
+                                        <input type="tel" class="input-sm form-control common-input"
                                             value="<?=set_value('phone')?>" name="phone"
                                             placeholder="<?=lang('hd_lang.eg')?> <?=lang('hd_lang.user_placeholder_phone')?>" pattern="[0-9]+"/>
                                     </div>
@@ -167,23 +168,17 @@ $custom = new custom_name_helper();
                         <th><?=lang('hd_lang.username')?> </th>
                         <th><?=lang('hd_lang.full_name')?></th>
                         <th><?=lang('hd_lang.company')?> </th>
-                        <th><?=lang('hd_lang.role')?> </th>
+                        
                         <th class="hidden-sm"><?=lang('hd_lang.date')?> </th>
                         <th class="col-options no-sort"><?=lang('hd_lang.options')?></th>
-                    </tr>
+					</tr> 
                     <?php foreach (User::all_users() as $key => $user) { ?>
                     <tr>
                         <?php $info = User::profile_info($user->id); ?>
                         <td >
-                            <a class="thumb-sm avatar" 
-                                data-title="<?=User::login_info($user->id)->email?>" >
-
-
+                            <a class="thumb-sm avatar" data-title="<?=User::login_info($user->id)->email?>" >
                                 <img src="<?php //echo User::avatar_url($user->id); ?>" class="img-rounded radius_6">
-
-                                <span
-                                    class="label label-<?=($user->banned == '1') ? 'danger': 'success'?>"><?=$user->username?></span>
-
+                                <span class="label label-<?=($user->banned == '1') ? 'danger': 'success'?>"><?=$user->username?></span>
                             </a>
                         </td>
 
@@ -201,21 +196,7 @@ $custom = new custom_name_helper();
 								N/A
 							<?php endif; ?>
 						</td>
-                        <td>
-
-                            <?php if (User::get_role($user->id) == 'admin') {
-									  $span_badge = 'label label-danger';
-								  }elseif (User::get_role($user->id) == 'staff') {
-									  $span_badge = 'label label-info';
-								  }elseif (User::get_role($user->id) == 'client') {
-									  $span_badge = 'label label-default';
-								  }else{
-									  $span_badge = '';
-								}
-							?>
-                            <span class="<?=$span_badge?>">
-                                <?=lang(User::get_role($user->id))?></span>
-                        </td>
+						
 
                         <td class="hidden-sm">
                             <?=strftime($custom->getconfig_item('date_format'), strtotime($user->created));?>
@@ -311,6 +292,19 @@ $custom = new custom_name_helper();
         </div>
     </div>
 	<script>
+	document.getElementById('registerForm').addEventListener('submit', function(event) {
+	  var emailInput = document.querySelector('input[name="email"]');
+	  var emailValue = emailInput.value;
+
+	  // Simple email validation regex
+	  var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+	  if (!emailPattern.test(emailValue)) {
+		alert('Please enter a valid email address.');
+		event.preventDefault(); // Prevent form submission
+	  }
+	});
+		
 	  var inputFields = document.querySelectorAll('input[name="fullname"], input[name="username"]');
 	  inputFields.forEach(function(inputField) {
 		inputField.addEventListener('input', function() {
