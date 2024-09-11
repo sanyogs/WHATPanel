@@ -26,8 +26,9 @@ use App\Models\User;
 			</ul>
 			
 			<input type="hidden" name="user_id" value="<?=$user_id?>">
-			<?php
-			$company = User::profile_info($user_id)->company;
+			<?php 	
+			$company = User::info_profile($user_id)->company;
+			
 			if ($company >= 1) {
 				$redirect = 'companies/view/'.$company;
 			}else{
@@ -39,7 +40,7 @@ use App\Models\User;
 		</div>
 		<div class="modal-footer p-3"> <a href="#" class="btn btn-default" data-dismiss="modal"><?=lang('hd_lang.close')?></a>
 			<button type="submit" class="btn btn-danger common-button"><?=lang('hd_lang.delete_button')?></button>
-		</form>
+		<?php echo form_close(); ?>
 	</div>
 </div>
 <!-- /.modal-content -->

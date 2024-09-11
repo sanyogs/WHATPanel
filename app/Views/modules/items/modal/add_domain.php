@@ -119,7 +119,7 @@ $registrars = $itemModel::domain_registrars();
 			            <div id="fields_container"></div>
             <div class="modal-footer"> <a href="#" class="btn btn-default" data-dismiss="modal"><?= lang('hd_lang.close') ?></a>
                 <button type="submit" class="btn btn-<?= $helper->getconfig_item('theme_color'); ?>"><?= lang('hd_lang.add_item') ?></button>
-                </form>
+                <?php echo form_close(); ?>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -164,45 +164,77 @@ $registrars = $itemModel::domain_registrars();
         }
     }
 
-    // Function to dynamically add fields based on max_years
-    function addFields() {
-        var maxYears = parseInt(document.getElementById("max_years").value);
-        var container = document.getElementById("fields_container");
-        container.innerHTML = ""; // Clear previous fields
 
-        if (maxYears > 10) {
-            maxYears = 10;
-        }
+	// Function to dynamically add fields based on max_years
+	function addFields() {
+		var maxYears = parseInt(document.getElementById("max_years").value);
+		var container = document.getElementById("price");
+		container.innerHTML = ""; // Clear previous fields
 
-        for (var i = 1; i <= maxYears; i++) {
-            container.innerHTML += `
-               <div class="rowGenerats">
-	<div class="form-group modal-input">
-                    <label class="col-sm-4 control-label"><?= lang('hd_lang.registration') ?> ${i}</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" placeholder="0.00" name="registration_${i}" oninput="validateInput(this)">
-                    </div>
-                </div>
-				<div class="form-group modal-input">
-                    <label class="col-sm-4 control-label"><?= lang('hd_lang.transfer') ?> ${i}</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" placeholder="0.00" name="transfer_${i}" oninput="validateInput(this)">
-                    </div>
-                </div>
-				<div class="form-group modal-input">
-                    <label class="col-sm-4 control-label"><?= lang('hd_lang.renewal') ?> ${i}</label>
-                    <div class="col-sm-7">
-                        <input type="text" class="form-control" placeholder="0.00" name="renewal_${i}" oninput="validateInput(this)">
-                    </div>
-                </div>
-	</div>
-            `;
-        }
-    }
+		if (maxYears > 10) {
+			maxYears = 10;
+		}
 
-    // Call validateMaxYears() when the page loads
-    window.onload = validateMaxYears;
+		for (var i = 1; i <= maxYears; i++) {
+			container.innerHTML += `
+				<div class="rowGenerats">
+					<div class="form-group modal-input">
+						<label class="col-sm-4 control-label">Registration ${i}</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" placeholder="0.00" id="registration_${i}" name="registration_${i}" oninput="updateValues()">
+						</div>
+					</div>
+					<div class="form-group modal-input">
+						<label class="col-sm-4 control-label">Transfer ${i}</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" placeholder="0.00" id="transfer_${i}" name="transfer_${i}" oninput="updateValues()">
+						</div>
+					</div>
+					<div class="form-group modal-input">
+						<label class="col-sm-4 control-label">Renewal ${i}</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" placeholder="0.00" id="renewal_${i}" name="renewal_${i}" oninput="updateValues()">
+						</div>
+					</div>
+				</div>
+			`;
+		}
+	}
+
+	// Function to update the subsequent fields based on the first fields
+	function updateValues() {
+		// Get the values of Registration 1, Transfer 1, and Renewal 1
+		var registration1 = parseFloat(document.getElementById('registration_1').value) || 0;
+		var transfer1 = parseFloat(document.getElementById('transfer_1').value) || 0;
+		var renewal1 = parseFloat(document.getElementById('renewal_1').value) || 0;
+
+		// Loop to update registration, transfer, and renewal fields for indices 2 to 10
+		for (var i = 2; i <= 10; i++) {
+			var registrationField = document.getElementById(`registration_${i}`);
+			var transferField = document.getElementById(`transfer_${i}`);
+			var renewalField = document.getElementById(`renewal_${i}`);
+
+			// If the fields exist, update them with the multiplied values
+			if (registrationField) {
+				registrationField.value = (registration1 * i).toFixed(2);
+			}
+			if (transferField) {
+				transferField.value = (transfer1 * i).toFixed(2);
+			}
+			if (renewalField) {
+				renewalField.value = (renewal1 * i).toFixed(2);
+			}
+		}
+	}
+
+	// Call addFields() when the page loads
+	window.onload = function() {
+		document.getElementById("max_years").addEventListener("change", addFields);
+		addFields(); // Initialize fields
+	};
+
 	
+	//
 	const itemNameInput = document.getElementById('item_name');
 
 	itemNameInput.addEventListener('input', function() {

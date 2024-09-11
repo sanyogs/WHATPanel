@@ -14,12 +14,12 @@ $db = \Config\Database::connect();
 		cursor: pointer;
 	}
 </style>
-<div class="modal-dialog">
-  <div class="modal-content">
+<div class="modal-dialog modal-xs">
+  <div class="modal-content my-modal">
     <div class="modal-header"> <button type="button" class="close" data-dismiss="modal">&times;</button> 
     <h4 class="modal-title"><?=lang('hd_lang.permission_settings')?> <?php
                 if (isset($user_id)) {
-                    echo ' for '.ucfirst(AppLib::get_table_field('hd_users',array('id'=>$user_id),'username'));
+                    echo ' for '.ucfirst(Applib::get_table_field('hd_users',array('id'=>$user_id),'username'));
                 }
                 ?></h4>
     </div>

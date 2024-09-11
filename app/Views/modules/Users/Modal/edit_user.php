@@ -19,8 +19,7 @@ $session = \Config\Services::session();
 $custom = new custom_name_helper();
 
 ?>
-<?php $company = User::profile_info($id);
-
+<?php $company = User::info_profile($id);
 
 ?>
 <div class="modal-dialog modal-xl">
@@ -31,7 +30,7 @@ $custom = new custom_name_helper();
         </div><?php
 			 $attributes = array('class' => 'bs-example form-horizontal');
           echo form_open_multipart(base_url().'account/update',$attributes); ?>
-        <?php $user = User::view_user($id); $info = User::profile_info($id); ?>
+        <?php $user = User::view_user($id); $info = User::info_profile($id); ?>
         <div class="modal-body">
             <input type="hidden" name="user_id" value="<?=$user->id?>">
 
@@ -164,7 +163,7 @@ $custom = new custom_name_helper();
                 data-dismiss="modal"><?=lang('hd_lang.close')?></a>
             <button type="submit"
                 class="btn common-button btn-<?=$custom->getconfig_item('theme_color');?>"><?=lang('hd_lang.save_changes')?></button>
-            </form>
+            <?php echo form_close(); ?>
         </div>
     </div>
     <!-- /.modal-content -->

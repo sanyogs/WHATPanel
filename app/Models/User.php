@@ -207,6 +207,14 @@ class User extends Model
         return $result;
     }
 	
+    static function info_profile($id)
+	 {
+        $db = \Config\Database::connect();
+
+		$builder = $db->table('hd_account_details');
+
+		return $builder->where('user_id', $id)->get()->getRow();
+    }
 
     public static function get_id()
     {

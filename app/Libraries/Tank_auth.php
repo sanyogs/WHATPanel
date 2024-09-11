@@ -506,8 +506,10 @@ class Tank_auth
             $data['new_email_key'] = md5(rand() . microtime());
         }
 
-        $res = $this->create_user($username, $email, $password, $fullname, $comp, $role, $phone, $email_activation, '', '', '', '', '', '', '', '');
-
+        //$res = $this->create_user($username, $email, $password, $fullname, $comp, $role, $phone, $email_activation, '', '', '', '', '', '', '', '');
+        $model = new Users();
+        
+        $res = $model->create_user($data, $profile, !$email_activation, $company);
         if ($res) {
             // Update primary contact if necessary
             // $com = $this->companiesModel->where('co_id', $company)->first();
