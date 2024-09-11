@@ -204,51 +204,71 @@ $helper = new custom_name_helper();
 
     // Function to dynamically add fields based on max_years
 	function addFields() {
-    var maxYears = parseInt(document.getElementById("max_years").value);
-    var container = document.getElementById("fields_container");
+		var maxYears = parseInt(document.getElementById("max_years").value);
+		var container = document.getElementById("fields_container");
+		container.innerHTML = ""; // Clear previous fields
 
-    // Check if there are already fields in the container
-    var existingFieldsCount = container.getElementsByClassName("form-group").length;
+		if (maxYears > 10) {
+			maxYears = 10;
+		}
 
-    // If fields already exist, just return
-    if (existingFieldsCount > 0) {
-        return;
-    }
+		for (var i = 1; i <= maxYears; i++) {
+			container.innerHTML += `
+				<div class="rowGenerats">
+					<div class="form-group modal-input">
+						<label class="col-sm-4 control-label">Registration ${i}</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" placeholder="0.00" id="registration_${i}" name="registration_${i}" oninput="updateValues()">
+						</div>
+					</div>
+					<div class="form-group modal-input">
+						<label class="col-sm-4 control-label">Transfer ${i}</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" placeholder="0.00" id="transfer_${i}" name="transfer_${i}" oninput="updateValues()">
+						</div>
+					</div>
+					<div class="form-group modal-input">
+						<label class="col-sm-4 control-label">Renewal ${i}</label>
+						<div class="col-sm-7">
+							<input type="text" class="form-control" placeholder="0.00" id="renewal_${i}" name="renewal_${i}" oninput="updateValues()">
+						</div>
+					</div>
+				</div>
+			`;
+		}
+	}
 
-    // Limit the maximum number of years to 10
-    if (maxYears > 10) {
-        maxYears = 10;
-    }
+	// Function to update the subsequent fields based on the first fields
+	function updateValues() {
+		// Get the values of Registration 1, Transfer 1, and Renewal 1
+		var registration1 = parseFloat(document.getElementById('registration_1').value) || 0;
+		var transfer1 = parseFloat(document.getElementById('transfer_1').value) || 0;
+		var renewal1 = parseFloat(document.getElementById('renewal_1').value) || 0;
 
-    // Create fields based on the number of years
-    for (var i = 1; i <= maxYears; i++) {
-        container.innerHTML += `
-            <div class="form-group modal-input">
-                <label class="col-sm-4 control-label"><?= lang('hd_lang.registration') ?> ${i}</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" placeholder="0.00" name="registration_${i}" oninput="validateInput(this)">
-                </div>
-            </div>
-            <div class="form-group modal-input">
-                <label class="col-sm-4 control-label"><?= lang('hd_lang.transfer') ?> ${i}</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" placeholder="0.00" name="transfer_${i}" oninput="validateInput(this)">
-                </div>
-            </div>
-            <div class="form-group modal-input">
-                <label class="col-sm-4 control-label"><?= lang('hd_lang.renewal') ?> ${i}</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" placeholder="0.00" name="renewal_${i}" oninput="validateInput(this)">
-                </div>
-            </div>
-        `;
-    }
-}
+		// Loop to update registration, transfer, and renewal fields for indices 2 to 10
+		for (var i = 2; i <= 10; i++) {
+			var registrationField = document.getElementById(`registration_${i}`);
+			var transferField = document.getElementById(`transfer_${i}`);
+			var renewalField = document.getElementById(`renewal_${i}`);
 
+			// If the fields exist, update them with the multiplied values
+			if (registrationField) {
+				registrationField.value = (registration1 * i).toFixed(2);
+			}
+			if (transferField) {
+				transferField.value = (transfer1 * i).toFixed(2);
+			}
+			if (renewalField) {
+				renewalField.value = (renewal1 * i).toFixed(2);
+			}
+		}
+	}
 
-
-    // Call validateMaxYears() when the page loads
-    window.onload = validateMaxYears;
+	// Call addFields() when the page loads
+	window.onload = function() {
+		document.getElementById("max_years").addEventListener("change", addFields);
+		addFields(); // Initialize fields
+	};
 </script>
 
     </div>

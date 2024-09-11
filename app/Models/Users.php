@@ -171,16 +171,17 @@ class Users extends Model
 	 */
 	function create_user($data, $profile, $activated = TRUE, $company)
 	{
+		$db = \Config\Database::connect();
 		$data['created'] = date('Y-m-d H:i:s');
 		$data['activated'] = $activated ? 1 : 0;
 
-		$builder = $this->db->table($this->table);
+		$builder = $db->table('hd_users');
 
 		if ($builder->insert($data)) {
-			$userId = $this->db->insertID();
+			$userId = $db->insertID();
 
 			if ($activated) {
-				$this->createProfile($userId, $profile);
+				$this->create_profile($userId, $profile);
 			}
 
 			return ['user_id' => $userId];
@@ -487,12 +488,13 @@ class Users extends Model
 	 */
 	private function create_profile($user_id, $profile)
 	{
+		$db = \Config\Database::connect();
 		$profile['user_id'] = $user_id;
-
-		$builder = $this->db->table($this->profile_table);
+	
+		$builder = $db->table('hd_account_details');
 		$builder->insert($profile);
 
-		return $this->db->affectedRows() > 0;
+		return $db->affectedRows() > 0;
 	}
 
 
