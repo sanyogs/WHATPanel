@@ -341,9 +341,6 @@ class Razorpay extends WhatPanel
 
     public function process_payment()
     {
-        error_reporting(E_ALL);
-        ini_set("display_errors", "1");
-
         $session = \Config\Services::session();
 
         $db = \Config\Database::connect();
@@ -363,8 +360,6 @@ class Razorpay extends WhatPanel
 		// echo "<pre>";print_r($razorpay_details);die;
 
         $authAPIkey = base64_encode($razorpay_details->api_key . ":" . $razorpay_details->secret_key);
-		
-		// echo $authAPIkey;die;
 
         // Set transaction details
         $order_id = uniqid();
@@ -382,31 +377,6 @@ class Razorpay extends WhatPanel
             // 'payment_capture' => 1
         );
 		
-		// echo "<pre>";print_r($postdata);die;
-
-        // $curl = curl_init();
-
-        // curl_setopt_array($curl, array(
-        //     CURLOPT_URL => 'https://api.razorpay.com/v1/orders',
-        //     CURLOPT_RETURNTRANSFER => true,
-        //     CURLOPT_ENCODING => '',
-        //     CURLOPT_MAXREDIRS => 10,
-        //     CURLOPT_TIMEOUT => 0,
-        //     CURLOPT_FOLLOWLOCATION => true,
-        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //     CURLOPT_CUSTOMREQUEST => 'POST',
-        //     CURLOPT_POSTFIELDS => json_encode($postdata),
-        //     CURLOPT_HTTPHEADER => array(
-        //         'Content-Type: application/json',
-        //         'Authorization: ' . $authAPIkey
-        //     ),
-        // ));
-
-        // $response = curl_exec($curl);
-
-        // curl_close($curl);
-        // $orderRes = json_decode($response);
-
         $client = new GuzzleClient();
 
         try {
@@ -459,8 +429,6 @@ class Razorpay extends WhatPanel
 
     public function verify_payment()
     {
-        error_reporting(E_ALL);
-        ini_set("display_errors", "1");
         $session = \Config\Services::session();
 
         $db = \Config\Database::connect();
