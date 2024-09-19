@@ -31,7 +31,7 @@ $tax_total = 0;
 <div class="box custom-invoice-view">
 
     <div class="box-header clearfix hidden-print">
-        <?php $inv = Invoice::view_by_id($id); ?>	
+        <?php $inv = Invoice::view_by_id($id); ?>
         <?php $l = Client::view_by_id($inv->client); ?>
         <?php $client_cur = Client::view_by_id($inv->client); ?>
         <?php $use_modal = array('bitcoin', 'paypal', 'coinpayments', 'checkout'); ?>
@@ -171,15 +171,13 @@ $tax_total = 0;
                     <?php if (User::is_admin() || User::perm_allowed(User::get_id(),'pay_invoice_offline')
             				&& (Invoice::get_invoice_due_amount($inv->inv_id) > 0) ) {
                 
-                if(User::is_admin()) {
-                ?>
-
+					if(User::is_admin()) {
+					?>
                     <a class="btn btn-sm btn-success btn-responsive common-button"
                         href="<?=base_url()?>invoices/pay/<?=$inv->inv_id?>" 
                         data-original-title="<?=lang('hd_lang.pay_invoice')?>" >
                         <i class="fa fa-money"></i> <?= lang('hd_lang.add_payment') ?>
                     </a>
-
                     <?php } }
 
 					if(User::is_client()) {
@@ -678,8 +676,8 @@ $tax_total = 0;
 
                 </tr>
                 <?php endif ?>
-			
-			<tr>
+	
+			<tr> 
                     <td colspan="<?= $showtax ? '7' : '5' ?>" class="text-right no-border">
                         <strong><?= lang('hd_lang.product_tax') ?> (<?=Applib::format_tax($item->item_tax_rate)?>%)</strong>
                     </td>
@@ -802,6 +800,149 @@ $tax_total = 0;
     </div>
     <br>
     <br>
+	<?php if (User::is_admin() && $inv->status == 'Paid') { ?>		
+	<hr>
+	<h2>Transaction Details</h2>
+	<div class="table-responsive">
+		<table id="inv-details" class="hs-table" type="invoices">
+			<tbody>
+				<tr>
+					<th></th>
+					<?php if ($showtax) : ?>
+						<th width="20%"><?= lang('hd_lang.item_name') ?> </th>
+						<th width="25%"><?= lang('hd_lang.description') ?> </th>
+						<th width="7%" class="text-right"><?= lang('hd_lang.qty') ?> </th>
+						<th width="10%" class="text-right"><?= lang('hd_lang.tax_rate') ?> </th>
+						<th width="12%" class="text-right"><?= lang('hd_lang.unit_price') ?> </th>
+						<th width="12%" class="text-right"><?= lang('hd_lang.tax') ?> </th>
+						<th width="12%" class="text-right"><?= lang('hd_lang.total') ?> </th>
+					<?php else : ?>
+						<th width="25%"><?= lang('hd_lang.item_name') ?> </th>
+						<th width="35%"><?= lang('hd_lang.description') ?> </th>
+						<th width="7%" class="text-right"><?= lang('hd_lang.qty') ?> </th>
+						<th width="12%" class="text-right"><?= lang('hd_lang.unit_price') ?> </th>
+						<th width="12%" class="text-right"><?= lang('hd_lang.total') ?> </th>
+					<?php endif; ?>
+					<th class="text-right inv-actions"></th>
+				</tr>
+				<?php foreach (Invoice::has_items($id) as $key => $item) { ?>
+					<tr class="sortable" data-name="<?= $item->item_name ?>" data-id="<?= $item->item_id ?>">
+						<td class="drag-handle"><i class="fa fa-reorder"></i></td>
+						<td>
+
+							<?php //if (User::perm_allowed(User::get_id(),'edit_all_invoices')) { 
+							?>
+							<a class="text-info" href="<?= base_url() ?>invoices/items/edit/<?= $item->item_id ?>"
+								data-toggle="ajaxModal"><?= $item->item_name ?>
+							</a>
+							<?php //} else { 
+							?>
+							<?php //$item->item_name ?>
+							<?php //} 
+							?>
+						</td>
+						<td class="text-muted"><?= nl2br($item->item_desc) ?></td>
+
+						<td class="text-right"><?= Applib::format_quantity($item->quantity); ?></td>
+						<?php if ($showtax) : ?>
+							<td class="text-right"><?= Applib::format_tax($item->item_tax_rate) . '%'; ?></td>
+						<?php endif; ?>
+						<td class="text-right">
+
+							<?php if (!User::is_admin() && !User::is_staff()) {
+			echo Applib::format_currency(Applib::client_currency($client_cur->currency, $item->unit_cost), 'default_currency');
+							} else {
+								echo Applib::format_currency($item->unit_cost, 'default_currency');
+							}
+							?>
+						</td>
+						<?php if ($showtax) : ?>
+							<td class="text-right">
+								<?php if (!User::is_admin() && !User::is_staff()) {
+									//echo Applib::format_currency($client_cur, Applib::client_currency($client_cur, $item->item_tax_total));
+									echo Applib::format_currency(Applib::client_currency($client_cur->currency, $item->item_tax_total), 'default_currency');
+								} else {
+									//echo Applib::format_currency($item->item_tax_total, 'default_currency');
+									echo Applib::format_currency($item->item_tax_total, 'default_currency');
+								}
+								?>
+							</td>
+						<?php endif; ?>
+						<td class="text-right">
+							<?php if (!User::is_admin() && !User::is_staff()) {
+								//echo Applib::format_currency($client_cur, Applib::client_currency($client_cur, $item->total_cost));
+								echo Applib::format_currency(Applib::client_currency($client_cur->currency, $item->total_cost), 'default_currency');
+							} else {
+								//echo Applib::format_currency($inv->currency, $item->total_cost);
+								echo Applib::format_currency($item->total_cost, 'default_currency');
+							}
+							?>
+						</td>
+
+						<td>
+							<?php //if (User::perm_allowed(User::get_id(),'edit_all_invoices')) { 
+							?>
+							<a class="hidden-print"
+								href="<?= base_url() ?>invoices/items/delete/<?= $item->item_id ?>/<?= $item->invoice_id ?>"
+								data-toggle="ajaxModal"><i class="fa fa-trash-o text-danger"></i>
+							</a>
+							<?php //} 
+							?>
+						</td>
+					</tr>
+				<?php } ?>
+
+				<?php //if (User::perm_allowed(User::get_id(),'edit_all_invoices')) { ?>
+
+				<?php //if (User::is_admin() && $inv->status != 'Paid') { ?>
+					<tr class="hidden-print">
+						<?php $attributes = array('class' => 'bs-example form-horizontal');
+						echo form_open(base_url() . 'invoices/items/add', $attributes);
+						?>
+						<input class='common-input' type="hidden" name="invoice_id" value="<?= $inv->inv_id ?>">
+					<input class='common-input' type="hidden" name="item_order" value="<?= count(Invoice::has_items($inv->inv_id)) + 1 ?>">
+						<input class='common-input' id="hidden-item-name" type="hidden" name="item_name">
+						<td></td>
+						<td><input id="auto-item-name" data-scope="invoices" type="text" name="item_name"
+								placeholder="<?= lang('hd_lang.item_name') ?>" class="typeahead form-control common-input"></td>
+
+						<td><textarea id="auto-item-desc" rows="1" name="item_desc"
+								placeholder="<?= lang('hd_lang.item_description') ?>"
+								class="form-control common-input js-auto-size"></textarea>
+						</td>
+
+						<td><input id="auto-quantity" type="text" name="quantity" value="1" class="form-control common-input"></td>
+						<?php if ($showtax) : ?>
+							<td>
+								<select name="item_tax_rate" class="form-control m-b common-select">
+									<option value="0.00"><?= lang('hd_lang.none') ?></option>
+									<?php
+									foreach (Invoice::get_tax_rates() as $key => $tax) {
+									?>
+										<option value="<?= $tax->tax_rate_percent ?>"
+											<?= $custom_name_helper->getconfig_item('default_tax') == $tax->tax_rate_percent ? ' selected="selected"' : '' ?>>
+											<?= $tax->tax_rate_name ?></option>
+									<?php } ?>
+								</select>
+							</td>
+						<?php endif; ?>
+						<td><input id="auto-unit-cost" type="text" name="unit_cost" required placeholder="50.56"
+								class="form-control common-input"></td>
+						<?php if ($showtax) : ?>
+							<td><input type="text" name="tax" placeholder="0.00" readonly="" class="form-control common-input"></td>
+						<?php endif; ?>
+						<td></td>
+						<td><button type="submit" class="btn btn-<?= $custom_name_helper->getconfig_item('theme_color') ?> common-button"><i
+									class="fa fa-check"></i> <?= lang('hd_lang.save') ?></button></td>
+						<?php echo form_close(); ?>
+					</tr>
+				<?php //} ?>
+				<?php //} 
+				?>
+			</tbody>
+		</table>
+		</div>
+		<?php } ?>
 </div>
 
 <?= $this->endSection() ?>

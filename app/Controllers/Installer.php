@@ -456,13 +456,13 @@ class Installer extends MX_Controller
 		curl_close($ch);
 
 		// Save the content to a local file
-		if (file_put_contents($tempFilePath, $sqlContent) === false) {
+		if (file_put_contents($tempFilePath, $sqlContent) === false) { 
 			die('Failed to save the file.');
 		}
 
 		// Read the SQL file
 		$sqlContent = file_get_contents($tempFilePath);
-		if ($sqlContent === false) {
+		if ($sqlContent === false) { 
 			die('Failed to read the file content.');
 		}
 		

@@ -1125,8 +1125,12 @@ CREATE TABLE `hd_domains` (
   `max_years` int(11) DEFAULT NULL,
   `tax_rate` enum('Yes','No') DEFAULT 'No',
   `ext_order` int(11) DEFAULT NULL,
-  `display` enum('yes','no') DEFAULT 'yes'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+  `display` enum('yes','no') DEFAULT 'yes',
+  PRIMARY KEY (`id`),
+  INDEX `idx_category` (`category`),
+  INDEX `idx_registrar` (`registrar`),
+  INDEX `idx_ext_name` (`ext_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Table structure for table `hd_images`
