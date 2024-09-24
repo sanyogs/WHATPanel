@@ -507,28 +507,15 @@ $helper = new custom_name_helper();
 					<div class="pieDiv">
 						<canvas id="dashPieChart"></canvas>
 					</div>
-						<?php
-				$total_receipts = $sums['paid'];
-				$model = new Invoice();
-				$invoices_cost = $model->invoice_amount();
-				$outstanding = $sums['due'];
-				if ($outstanding < 0) $outstanding = 0;
-				$perc_paid = $perc_outstanding = 0;
 
-				if ($invoices_cost > 0) {
-					$perc_paid = ($total_receipts / $invoices_cost) * 100;
-					$perc_paid = ($perc_paid > 100) ? '100' : round($perc_paid, 1);
-					$perc_outstanding = round(100 - $perc_paid, 1);
-				}
-				?>
 					<div class="pieChartLegends">
 						<div class="pieChartPaidDiv">
 							<span></span>
-					<h5><?= lang('hd_lang.paid') ?> - <?php echo Applib::format_currency($total_receipts,'default_currency'); ?></h5>
+							<h5>Paid - $ 1,000.00</h5>
 						</div>
 						<div class="pieChartOutstandingDiv">
 							<span></span>
-			<h5><?= lang('hd_lang.outstanding') ?> - <?php echo Applib::format_currency(Invoice::outstanding(), 'default_currency'); ?></h5>
+							<h5>Outstanding- $ 38.00</h5>
 						</div>
 					</div>
 				</div>
