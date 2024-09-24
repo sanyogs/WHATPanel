@@ -44,9 +44,7 @@ $tax_total = 0;
             <div class="col-11 ms-auto">
                 <div class="btn-group gap-3 invoice-btn-group pull-right">
                         <div class='grouper'>
-                        <button
-                 class="btn btn-sm common-button btn-<?=$custom_name_helper->getconfig_item('theme_color')?>  btn-responsive dropdown-toggle"
-                            data-toggle="dropdown"><?= lang('hd_lang.options') ?> <span class="caret"></span>
+                        <button class="btn btn-sm common-button btn-<?=$custom_name_helper->getconfig_item('theme_color')?>  btn-responsive dropdown-toggle" data-toggle="dropdown"><?= lang('hd_lang.options') ?> <span class="caret"></span>
                         </button>
 
                         <ul class="dropdown-menu">
@@ -164,35 +162,31 @@ $tax_total = 0;
 
                         </ul>
                         </div>
-                    
+							<?php if (Invoice::get_invoice_due_amount($inv->inv_id) > 0) : ?>
 
-                    <?php if (Invoice::get_invoice_due_amount($inv->inv_id) > 0) : ?>
+							<?php if (User::is_admin() || User::perm_allowed(User::get_id(),'pay_invoice_offline')
+									&& (Invoice::get_invoice_due_amount($inv->inv_id) > 0) ) {
 
-                    <?php if (User::is_admin() || User::perm_allowed(User::get_id(),'pay_invoice_offline')
-            				&& (Invoice::get_invoice_due_amount($inv->inv_id) > 0) ) {
-                
-					if(User::is_admin()) {
-					?>
-                    <a class="btn btn-sm btn-success btn-responsive common-button"
-                        href="<?=base_url()?>invoices/pay/<?=$inv->inv_id?>" 
-                        data-original-title="<?=lang('hd_lang.pay_invoice')?>" >
-                        <i class="fa fa-money"></i> <?= lang('hd_lang.add_payment') ?>
-                    </a>
-                    <?php } }
+							if(User::is_admin()) {
+							?>
+							<a class="btn btn-sm btn-success btn-responsive common-button"
+								href="<?=base_url()?>invoices/pay/<?=$inv->inv_id?>" 
+								data-original-title="<?=lang('hd_lang.pay_invoice')?>" >
+								<i class="fa fa-money"></i> <?= lang('hd_lang.add_payment') ?>
+							</a>
+							<?php } }
 
-					if(User::is_client()) {
-						$credit = Client::view_by_id($inv->client)->transaction_value;
-						if($credit > 0)
-						{ ?>
-								<a class="btn btn-sm btn-success btn-responsive common-button"
-									href="<?= base_url() ?>invoices/apply_credit/<?= $inv->inv_id ?>"
-									data-toggle="ajaxModal">
-									<?=lang('hd_lang.credit_balance') . ' (' .AppLib::format_currency( Applib::client_currency($client_cur, $credit), $client_cur) . ') ' . lang('hd_lang.pay')?>
-								</a>
-								<?php }
-					}
-
-
+							if(User::is_client()) {
+								$credit = Client::view_by_id($inv->client)->transaction_value;
+								if($credit > 0)
+								{ ?>
+										<a class="btn btn-sm btn-success btn-responsive common-button"
+											href="<?= base_url() ?>invoices/apply_credit/<?= $inv->inv_id ?>"
+											data-toggle="ajaxModal">
+											<?=lang('hd_lang.credit_balance') . ' (' .AppLib::format_currency( Applib::client_currency($client_cur, $credit), $client_cur) . ') ' . lang('hd_lang.pay')?>
+										</a>
+										<?php }
+							}
 								foreach(Plugin::payment_gateways() as $k => $gateway) 
 								{ ?>
 								<a class="btn btn-sm btn-primary btn-responsive common-button"
@@ -683,8 +677,7 @@ $tax_total = 0;
                     </td>
                     <td class="text-right">
                         <?php if(!User::is_admin() && !User::is_staff()) {
-								// echo Applib::format_currency($tax_total, 'default_currency');
-								echo Applib::format_currency_client($tax_total, $client_cur->currency);
+								echo Applib::format_currency_client($client_cur->currency);
                          }else{
 								echo Applib::format_currency($tax_total, 'default_currency');
                           } ?>
@@ -693,19 +686,26 @@ $tax_total = 0;
                     <td></td>
 
                 </tr>
-
-                <?php if ($inv->discount > 0) { ?>
+                  <?php if ($inv->discount > 0) { ?>
+				<?php $total_price = $total + $tax_total;
+	                  $discount = $total_price * $inv->discount_percentage / 100;	 ?>
                 <tr>
                     <td colspan="<?= $showtax ? '7' : '5' ?>" class="text-right no-border">
                         <strong><?= lang('hd_lang.discount') ?>-<?php echo Applib::format_tax($inv->discount_percentage); ?>%</strong>
                     </td>
-                    <td class="text-right">
-                    <?php if(!User::is_admin() && !User::is_staff()) {   
+
+                     <td class="text-right">
+                    	<?php if(!User::is_admin() && !User::is_staff()) {   
 						// echo Applib::format_currency((($total) * $inv->discount_percentage) / 100,'default_currency');
 						echo Applib::format_currency_client((($total) * $inv->discount_percentage) / 100, $client_cur->currency);
 					}
 					else{ 
-						echo Applib::format_currency((($total) * $inv->discount_percentage) / 100,'default_currency');
+						if(!$discount){
+							echo Applib::format_currency((($total) * $inv->discount_percentage) / 100,'default_currency');
+						}else{
+							$discount;
+						}
+						
 					} 
 					?> 
                     </td>
@@ -735,8 +735,12 @@ $tax_total = 0;
 
                 </tr>
                 <?php } ?>
-			
-			<?php $disc = ($total) * $inv->discount_percentage / 100; ?>
+
+			<?php 
+				$total_price = $total + $tax_total;
+	            $discount = $total_price * $inv->discount_percentage / 100;
+				$disc = $discount;
+			?>
 			
 			<?php $extra_fee = ($total) * $inv->extra_fee / 100; ?>
 			
@@ -747,9 +751,8 @@ $tax_total = 0;
                     <td class="text-right text-success">
                         <?php if(!User::is_admin() && !User::is_staff()) {
 							$total_cost = ($total + $tax_total + $extra_fee) - $disc;
-							//echo Applib::format_currency($total_cost, 'default_currency');
 							echo Applib::format_currency_client($total_cost, $client_cur->currency);
-                         }else{
+                         }else{ 
 							$total_cost = ($total + $tax_total + $extra_fee);
 							$aft_disc = $total_cost - $disc;
 							echo Applib::format_currency($aft_disc, 'default_currency');
@@ -766,7 +769,7 @@ $tax_total = 0;
                     <td class="text-right text-danger">
                         (-)
                         <?php if(!User::is_admin() && !User::is_staff()) {                                         
-    $payment_made = Applib::client_currency($client_cur->currency, Invoice::get_invoice_paid($inv->inv_id));
+    					$payment_made = Applib::client_currency($client_cur->currency, Invoice::get_invoice_paid($inv->inv_id));
 							echo Applib::format_currency_client($payment_made, $client_cur->currency);
                          }else{
 							echo Applib::format_currency(Invoice::get_invoice_paid($inv->inv_id), 'default_currency'); } ?>
@@ -774,16 +777,12 @@ $tax_total = 0;
                     <td></td>
                 </tr>
                 <?php } ?>
-
-
                 <tr>
                     <td colspan="<?= $showtax ? '7' : '5' ?>" class="text-right no-border"><strong>
                             <?=lang('hd_lang.due_amount')?></strong></td>
                     <td class="text-right" id="invoice-due-amount-display">
 						<?php 
-	
-	
-	if(!User::is_admin() && !User::is_staff()) {
+							if(!User::is_admin() && !User::is_staff()) {
 							$due_amt = Applib::client_currency($client_cur->currency, Invoice::get_invoice_due_amount($inv->inv_id));
 		
 							echo Applib::format_currency_client($due_amt + $tax_total, $client_cur->currency);
@@ -809,25 +808,27 @@ $tax_total = 0;
 				<tr>
 					<th></th>
 					<?php if ($showtax) : ?>
+						<th width="25%"><?= lang('hd_lang.date') ?> </th>
 						<th width="20%"><?= lang('hd_lang.item_name') ?> </th>
-						<th width="25%"><?= lang('hd_lang.description') ?> </th>
 						<th width="7%" class="text-right"><?= lang('hd_lang.qty') ?> </th>
 						<th width="10%" class="text-right"><?= lang('hd_lang.tax_rate') ?> </th>
 						<th width="12%" class="text-right"><?= lang('hd_lang.unit_price') ?> </th>
 						<th width="12%" class="text-right"><?= lang('hd_lang.tax') ?> </th>
 						<th width="12%" class="text-right"><?= lang('hd_lang.total') ?> </th>
 					<?php else : ?>
+						<th width="25%"><?= lang('hd_lang.date') ?> </th>
 						<th width="25%"><?= lang('hd_lang.item_name') ?> </th>
-						<th width="35%"><?= lang('hd_lang.description') ?> </th>
 						<th width="7%" class="text-right"><?= lang('hd_lang.qty') ?> </th>
 						<th width="12%" class="text-right"><?= lang('hd_lang.unit_price') ?> </th>
 						<th width="12%" class="text-right"><?= lang('hd_lang.total') ?> </th>
 					<?php endif; ?>
 					<th class="text-right inv-actions"></th>
 				</tr>
+	
 				<?php foreach (Invoice::has_items($id) as $key => $item) { ?>
 					<tr class="sortable" data-name="<?= $item->item_name ?>" data-id="<?= $item->item_id ?>">
 						<td class="drag-handle"><i class="fa fa-reorder"></i></td>
+						<td class="text-muted"><?= nl2br($item->date_saved) ?></td>
 						<td>
 
 							<?php //if (User::perm_allowed(User::get_id(),'edit_all_invoices')) { 
@@ -841,7 +842,7 @@ $tax_total = 0;
 							<?php //} 
 							?>
 						</td>
-						<td class="text-muted"><?= nl2br($item->item_desc) ?></td>
+						
 
 						<td class="text-right"><?= Applib::format_quantity($item->quantity); ?></td>
 						<?php if ($showtax) : ?>

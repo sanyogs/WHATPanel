@@ -383,9 +383,6 @@ class Invoice extends Model
             }
             elseif($invoice_details->discount_type == 'Percentage')
             { 
-                // return (self::view_by_id($invoice)->discount / 100) - self::get_invoice_subtotal($invoice);
-                // return (self::view_by_id($invoice)->discount / 100);
-
                 $totalCost = $db
                 ->table('hd_items')
                 ->selectSum('total_cost')
@@ -393,10 +390,20 @@ class Invoice extends Model
                 ->get()
                 ->getRow()
                 ->total_cost;
-
+				
+				$totaltax = $db
+                ->table('hd_items')
+                ->selectSum('item_tax_total')
+                ->where('invoice_id', $invoice)
+                ->get()
+                ->getRow()
+                ->item_tax_total;
+				
+				$total_amount = $totalCost + $totaltax;
                 $discountPercent = self::view_by_id($invoice)->discount_percentage;
-                $discountAmount = ($totalCost * $discountPercent) / 100;
-                $newTotal = $totalCost - $discountAmount;
+                $discountAmount = $total_amount * $discountPercent / 100;
+				
+                $newTotal = $total_amount - $discountAmount;
 
                 return $discountAmount;
             }        
